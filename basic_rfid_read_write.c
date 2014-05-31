@@ -6,7 +6,7 @@
 #include <time.h>
 #include <math.h>
 
-#define usb_serial "A900fDhH"
+#define usb_serial "A900fDlf"//"A900fDhH"
 #define description FT232R
 typedef uint8_t byte;
 
@@ -44,22 +44,22 @@ void ftdi_close()
 int main()
 {
   ftdi_bootup();
-  printf("sending data to the rfid card\n");
-  byte pack[]={0xaa,0xbb,0x03,0x01,0x01,0x03};
-  ftdi_write_data(&ftdi,pack,6);
-  printf("data written");
+  //printf("sending data to the rfid card\n");
+  //byte pack[]={0xaa,0xbb,0x03,0x01,0x01,0x03};
+  //ftdi_write_data(&ftdi,pack,6);
+  //printf("data written");
   byte packet_recieved[6];
   int i,attempts=100;
   //usleep(5000);
   do
   {
-    while(ftdi_read_data(&ftdi,packet_recieved,1)>0)
+    while(ftdi_read_data(&ftdi,packet_recieved,6)>0)
     {
         printf("data reading...\n");
         for(i=0;i<1;i++)
           printf("%x  ",packet_recieved[i]);
     }
-  }while(attempts--);
+  }while(1);
 
   ftdi_close();
 }

@@ -67,7 +67,7 @@ void set_blocking (int fd, int should_block)
 
 int main()
 {
-    char *portname = "/dev/ttySAC1";
+    char *portname = "/dev/ttySAC3";
     int fd = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0)
     {
@@ -75,26 +75,28 @@ int main()
             return;
     }
 
-    set_interface_attribs (fd, B115200, 0);  // set speed to 115,200 bps, 8n1 (no parity)
+    set_interface_attribs (fd, B19200, 0);  // set speed to 115,200 bps, 8n1 (no parity)
     set_blocking (fd, 0);                // set no blocking
 
-    write(fd, "0xAA",1);
-    write(fd, "0xBB",1);
-    write(fd, "0x03",1);
-    write(fd, "0x01",1);
-    write(fd, "0x01",1);
-    write(fd, "0x03",1);
+    write(fd, "0xAABB03010103",6);
+    // write(fd, "0xBB",1);
+    // write(fd, "0x03",1);
+    // write(fd, "0x01",1);
+    // write(fd, "0x01",1);
+    // write(fd, "0x03",1);
 
     usleep ((7) * 100);             // sleep enough to transmit the 7 plus
                                          // receive 25:  approx 100 uS per char transmit
     char buf [100];
-    for(int i=0;i<100;i++)
-      buf[i]=0;
     int n = read (fd, buf, sizeof(buf));  // read up to 100 characters if ready to read
-    for(int i=0;i<sizeof(buf);i++)
+    if(n>0)
     {
-        printf("%c\t",buf[i] );
+      for(int i=0;i<sizeof(buf);i++)
+      {
+          printf("%x",buf[i] );
+      }
     }
+
     return 0;
 
 }
