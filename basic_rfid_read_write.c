@@ -1,3 +1,5 @@
+//ftdi read and write code.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ftdi.h>
