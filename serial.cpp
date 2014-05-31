@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <string.h>
-#include <QDebug>
+//#include <QDebug>
 #else
 # include <cstdlib>
 # include <cstdio>
