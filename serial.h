@@ -58,6 +58,7 @@ namespace HAL
       int WriteByte(char b);
       int ReadByte(void);
       void WriteString(std::string s);
+      void WriteGen(void *buffer, int nbyte);
   }; // class Serial
 } // namespace HAL
 

@@ -103,10 +103,7 @@ namespace HAL
   {
     #ifdef WIN32
         DCB dcb;
-        hCom = CreateFile( device.c_str(),
-                           GENERIC_READ | GENERIC_WRITE,
-                           0,    // exclusive access
-                           NULL, // no security attributes
+        hCom = CreateFile( device.c_str(), GENERIC_READ | GENERIC_WRITE, 0, // exclusive access                           NULL, // no security attributes
                            OPEN_EXISTING, 0, NULL);
 
         if (hCom == INVALID_HANDLE_VALUE)
@@ -343,11 +340,15 @@ namespace HAL
     #endif
   }
 
+  void Serial::WriteGen(void *buffer, int nbyte)
+  {
+    ::write(fd,buffer,nbyte);
+  }
+
   void Serial::WriteString(std::string s)
   {
       for(int i = 0; i < s.size(); ++i)
       {
-//          qDebug() << s.at(i);
           WriteByte(s.at(i));
       }
       WriteByte('\n');

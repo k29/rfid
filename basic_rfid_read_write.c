@@ -29,7 +29,7 @@ void ftdi_bootup()
   else
   {
     printf("ftdi opened.\n");
-    ftdi_set_baudrate(&ftdi,19200);
+    ftdi_set_baudrate(&ftdi,115200);
   }
 }
 
@@ -55,7 +55,7 @@ int main()
   //usleep(5000);
   do
   {
-    while(ftdi_read_data(&ftdi,packet_recieved,6)>0)
+    while(ftdi_read_data(&ftdi,packet_recieved,1)>0)
     {
         printf("data reading...\n");
         for(i=0;i<1;i++)

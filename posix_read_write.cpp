@@ -2,32 +2,23 @@
 #include <iostream>
 #include <stdint.h>
 
-typedef uint8_t byte;
+typedef unsigned char byte;
 
 using namespace std;
 using namespace HAL;
+
 int main()
 {
-  Serial s;
-  if(s.Open("/dev/ttySAC3",19200))
+  Serial ser;
+  if(ser.Open("/dev/ttySAC3",115200))
   {
     cout<<"port open\n";
-    byte packet[6];
-    packet[0]=0xAA;
-    s.Write(packet,1);
-    packet[1]=0xBB;
-    s.Write(packet+1,1);
-    packet[2]=0x03;
-    s.Write(packet+2,1);
-    packet[3]=0x01;
-    s.Write(packet+3,1);
-    packet[4]=0x01;
-    s.Write(packet+4,1);
-    packet[5]=0x03;
-    s.Write(packet+5,1);
-
-
-    s.Close();
+    byte packet[]={0xAA,0xBB,0x03,0x01,0x01,0x03,0xAA,0x2D,0x7E,0x37};
+    for(int i=0;i<sizeof(packet);i++)
+      ser.WriteByte((char)packet[i]);
+    //ser.WriteByte('k');
+    //ser.WriteString(std::string("0xAA"));
+    ser.Close();
   }
   else
   {
