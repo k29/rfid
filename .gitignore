@@ -1,4 +1,4 @@
-arm_posix_read_write
-posix_read_write
+posix_tag_IO
+arm_posix_tag_IO
 find_all
 *.o
