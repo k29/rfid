@@ -1,9 +1,4 @@
-//TOD DO: reading only improved for the rf transmit function and not for others. though this new version is not
-//tested either.
-
 #include "tag.h"
-
-
 
 void Tag_Actions::checksum()
 {
@@ -81,30 +76,28 @@ void Tag_Actions::select_mifare_card()
     serial.WriteByte((char)packet[i]);
   }
 
-  // int attempt=100;
-  // bool flag=false;
-  // while(attempt--)
-  // {
-  //   if(serial.Read(packet_received,1)>0)
-  //   {
-  //     for(int i=0;i<sizeof(packet_received);i++)
-  //       printf("%x\t",packet_received[i]);
-  //     flag=true;
-  //   }
-  // }
-  // cout<<"\n";
-  // cout<<"Serial number: ";
-  // for(int i=5;i<9;i++)
-  //   cout<<packet_received[i];
-  // cout<<"\n";
-  // if(packet_received[9]==0x00)
-  //   cout<<"Mifare Standard 1K(S50) card\n";
-  // else if(packet_received[9]==0x01)
-  //   cout<<"Mifare Standard 4K(S70) card\n";
-  // else if(packet_received[9]==0x02)
-  //   cout<<"Mifare ProX card\n";
-  // if(!flag)
-  //   cout<<"Nothing to Read...\n";
+  cout<<"\nReading...\n";
+  bool flag=false;
+  byte temp_packet_read;
+  int i=0;
+  while(1)
+  {
+    if(serial.Read(&temp_packet_read,1)>0)
+    {
+      printf("%x\n",temp_packet_read);
+      packet_received[i]=temp_packet_read;
+      flag=true;
+    }
+    if(i>2 && i==packet_received[2]+2)
+      break;
+  }
+  cout<<"Hence the packet received is:\n";
+  for(int i=0;i<packet_received[2]+3;i++)
+    printf("%x\t",packet_received[i]);
+
+  cout<<"\n";
+  if(!flag)
+    cout<<"Nothing to Read...\n";
 }
 
 
