@@ -1,4 +1,4 @@
-all: serial.o serial.cpp serial.h tag.o tah.h tag.cpp
+all: serial.o serial.cpp serial.h tag.o tag.h tag.cpp
 	g++ serial.o tag.o posix_tag_IO.cpp -o posix_tag_IO
 
 serial.o: serial.cpp serial.h

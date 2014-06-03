@@ -1,7 +1,5 @@
-Tag_Actions::Tag_Actions()
-{
-  packet_reset();
-}
+#include "tag.h"
+
 
 
 void Tag_Actions::checksum(byte a[])
@@ -22,12 +20,12 @@ void Tag_Actions::packet_reset()
 }
 
 
-void Tag_Actions::control_rf_transmit(bool switch)
+void Tag_Actions::control_rf_transmit(bool state_switch)
 {
   packet_reset();
   packet[2]=0x03; //length
   packet[3]=0x01; //command for RF transmit
-  if(switch==true)
+  if(state_switch==true)
     packet[4]=0x01;
   else
     packet[4]=0x00;
@@ -43,7 +41,7 @@ void Tag_Actions::control_rf_transmit(bool switch)
   bool flag=false;
   while(attempt--)
   {
-    if(Read(packet_received,1)>0)
+    if(serial.Read(packet_received,1)>0)
     {
       for(int i=0;i<sizeof(packet_received);i++)
         printf("%x\t",packet_received[i]);
@@ -67,7 +65,7 @@ void Tag_Actions::select_mifare_card()
   bool flag=false;
   while(attempt--)
   {
-    if(Read(packet_received,1)>0)
+    if(serial.Read(packet_received,1)>0)
     {
       for(int i=0;i<sizeof(packet_received);i++)
         printf("%x\t",packet_received[i]);

@@ -13,7 +13,7 @@ using namespace HAL;
 int main()
 {
   Tag_Actions tag;
-  if(!tag.serial.open("/dev/ttySAC1",19200))
+  if(!tag.serial.Open("/dev/ttySAC1",19200))
   {
     cout<<"Port could not open\n";
     return 1;
