@@ -21,7 +21,6 @@ int main()
     byte packet[]={0xAA,0xBB,0x03,0x01,0x01,0x03};
     for(int i=0;i<sizeof(packet);i++)
     {
-      cout<<"writing...\n";
       s.WriteByte((char)packet[i]);
     }
 
@@ -34,7 +33,7 @@ int main()
       if(s.Read(packet_read,1)>0)
       {
         for(int i=0;i<sizeof(packet_read);i++)
-          printf("read packet %x\n",packet_read[i]);
+          printf("%x\n",packet_read[i]);
         flag=true;
       }
 
