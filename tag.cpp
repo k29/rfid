@@ -1,3 +1,11 @@
+Tag_Actions::Tag_Actions()
+{
+  packet[0]=0xAA;
+  packet[1]=0xBB;
+  
+}
+
+
 void Tag_Actions::checksum(byte a[])
 {
   byte s=a[2];

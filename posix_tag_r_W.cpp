@@ -12,14 +12,12 @@ using namespace HAL;
 
 int main()
 {
-  Serial serial;
   Tag_Actions tag;
-  if(serial.open("/dev/ttySAC1",19200))
-  {
+  if(tag.serial.open("/dev/ttySAC1",19200))
     cout<<"Port Open\n";
+  else
+    cout<<"Could not open port\n";
 
-    //perform actions here...
-    
   }
   return 0;
 }
