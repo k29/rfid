@@ -1,3 +1,5 @@
+//Read write serial data to the rfid reader. Make for the arm using make arm for other just make.
+
 #include "serial.h"
 #include <iostream>
 #include <stdint.h>

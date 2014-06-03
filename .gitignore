@@ -1,0 +1,4 @@
+arm_posix_read_write
+posix_read_write
+find_all
+*.o

@@ -46,10 +46,10 @@ void ftdi_close()
 int main()
 {
   ftdi_bootup();
-  //printf("sending data to the rfid card\n");
-  //byte pack[]={0xaa,0xbb,0x03,0x01,0x01,0x03};
-  //ftdi_write_data(&ftdi,pack,6);
-  //printf("data written");
+  printf("sending data to the rfid card\n");
+  byte pack[]={0xaa,0xbb,0x03,0x01,0x01,0x03};
+  ftdi_write_data(&ftdi,pack,6);
+  printf("data written");
   byte packet_recieved[6];
   int i,attempts=100;
   //usleep(5000);
