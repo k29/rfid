@@ -2,21 +2,21 @@
 
 
 
-void Tag_Actions::checksum(byte a[])
+void Tag_Actions::checksum()
 {
-  byte s=a[2];
-  for(int i=3;i<a[2]+1;i++)
-    s^=i;
-  a[a[2]+2]=s;
+  byte s=packet[2];
+  for(int i=3;i<packet[2]+2;i++)
+    s^=packet[i];
+  packet[packet[2]+2]=s;
 }
 
 
 void Tag_Actions::packet_reset()
 {
-  packet[0]=0xAA;
-  packet[1]=0xBB;
   for(int i=0;i<30;i++)
     packet[i]=0;
+  packet[0]=0xAA;
+  packet[1]=0xBB;
 }
 
 
@@ -29,28 +29,38 @@ void Tag_Actions::control_rf_transmit(bool state_switch)
     packet[4]=0x01;
   else
     packet[4]=0x00;
-  checksum(packet);
+
+  checksum();
+  //packet[5]=0x03;
   cout<<"Sending the packet: \n";
-  for(int i=0;i<packet[2]+2;i++)
+  for(int i=0;i<packet[2]+3;i++)
   {
-    cout<<packet[i]<<"\t";
+    printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
-  cout<<"\nReading...";
-  int attempt=100;
-  bool flag=false;
-  while(attempt--)
-  {
-    if(serial.Read(packet_received,1)>0)
-    {
-      for(int i=0;i<sizeof(packet_received);i++)
-        printf("%x\t",packet_received[i]);
-      flag=true;
-    }
-  }
-  cout<<"\n";
-  if(!flag)
-    cout<<"Nothing to Read...\n";
+//   cout<<"\nReading...\n";
+//
+//   bool flag=false;
+//   byte temp_packet_read;
+//   int i=0;
+//   while(1)
+//   {
+//     if(serial.Read(&temp_packet_read,1)>0)
+//     {
+//       printf("%x\n",temp_packet_read);
+//       packet_received[i]=temp_packet_read;
+//       flag=true;
+//     }
+//     if(i>2 && i==packet_received[2]+2)
+//       break;
+//   }
+//   cout<<"Hence the packet received is:\n";
+//   for(int i=0;i<packet_received[2]+3;i++)
+//     printf("%x\t",packet_received[i]);
+//
+//   cout<<"\n";
+//   if(!flag)
+//     cout<<"Nothing to Read...\n";
 }
 
 
@@ -59,7 +69,7 @@ void Tag_Actions::select_mifare_card()
   packet_reset();
   packet[2]=0x02;
   packet[3]=0x10;
-  checksum(packet);
+  checksum();
 
   int attempt=100;
   bool flag=false;
