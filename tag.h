@@ -24,12 +24,12 @@ class Tag_Actions
     Tag_Actions();
     void control_rf_transmit(bool switch);
     void select_mifare_card();
-    void read_data_block();
-    void write_data_block();
-    void inti_value_block();
-    void read_value_block();
-    void increment_value();
-    void decrement_value();
+    // void read_data_block();
+    // void write_data_block();
+    // void inti_value_block();
+    // void read_value_block();
+    // void increment_value();
+    // void decrement_value();
 
 }
 

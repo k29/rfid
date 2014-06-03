@@ -13,11 +13,14 @@ using namespace HAL;
 int main()
 {
   Tag_Actions tag;
-  if(tag.serial.open("/dev/ttySAC1",19200))
-    cout<<"Port Open\n";
-  else
-    cout<<"Could not open port\n";
-
+  if(!tag.serial.open("/dev/ttySAC1",19200))
+  {
+    cout<<"Port could not open\n";
+    return 1;
   }
+  else
+  cout<<"Port open\n";
+  tag.control_rf_transmit(true);
+  tag.select_mifare_card();
   return 0;
 }
