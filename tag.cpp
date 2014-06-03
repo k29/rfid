@@ -205,3 +205,52 @@ void Tag_Actions::write_data_block(char key_a_b, byte block, byte key, byte data
     cout<<"Nothing to Read...\n";
 
 }
+
+
+void Tag_Actions::init_value_block(char key_a_b, byte block, byte key, byte value)
+{
+    packet[2]=0x0E;
+    packet[3]=0x13;
+    if(key_a_b=='a || A')
+      packet[4]=0x00;
+    else if(key_a_b=='b || B')
+      packet[4]=0x01;
+    packet[5]=block;
+    for(int i=6;i<13;i++)
+      packet[i]=key[i-6];
+    for(int i=13;i<17;i++)
+      packet[i]=value[i-13];
+    checksum();
+
+    cout<<"Sending the packet: \n";
+    for(int i=0;i<packet[2]+3;i++)
+    {
+      printf("%x\n",packet[i]);
+      serial.WriteByte((char)packet[i]);
+    }
+
+    cout<<"\nReading...\n";
+    bool flag=false;
+    byte temp_packet_read;
+    int i=0;
+    while(1)
+    {
+      if(serial.Read(&temp_packet_read,1)>0)
+      {
+        printf("%x\n",temp_packet_read);
+        packet_received[i]=temp_packet_read;
+        flag=true;
+      }
+      if(i>2 && i==packet_received[2]+2)
+        break;
+    }
+
+    if(packet_received[4]==0x00)
+      cout<<"Init as value block success!!";
+    else
+      cout<<"Oops!! Erroor in writing.";
+
+    cout<<"\n";
+    if(!flag)
+      cout<<"Nothing to Read...\n";
+}

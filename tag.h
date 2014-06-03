@@ -21,6 +21,7 @@ class Tag_Actions
     byte key[6];
     byte data_write[16];
     byte data_read[16];
+    byte value[4];
 
     void checksum(); //XOR from len to data i.e packet[2] to packet[len+1]
     void packet_reset(); //initialises packet header and sets the rest to zero;
@@ -37,7 +38,7 @@ class Tag_Actions
     void select_mifare_card();
     void read_data_block(char key_a_b, byte block, byte key);
     void write_data_block(char key_a_b, byte block, byte key, byte data_write);
-    // void inti_value_block();
+    // void init_value_block();
     // void read_value_block();
     // void increment_value();
     // void decrement_value();
