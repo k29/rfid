@@ -16,6 +16,9 @@ class Tag_Actions
   private:
     byte packet[30];
     byte packet_received[30];
+    char key_a_b,
+    int block;
+    byte key[6];
 
     void checksum(); //XOR from len to data i.e packet[2] to packet[len+1]
     void packet_reset(); //initialises packet header and sets the rest to zero;
@@ -30,7 +33,7 @@ class Tag_Actions
 
     void control_rf_transmit(bool state_switch);
     void select_mifare_card();
-    // void read_data_block();
+    void read_data_block();
     // void write_data_block();
     // void inti_value_block();
     // void read_value_block();

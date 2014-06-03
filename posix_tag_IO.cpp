@@ -21,6 +21,6 @@ int main()
   else
   cout<<"Port open\n";
   tag.control_rf_transmit(true);
-  //tag.select_mifare_card();
+  tag.select_mifare_card();
   return 0;
 }
