@@ -108,13 +108,13 @@ void Tag_Actions::select_mifare_card()
 }
 
 
-void Tag_Actions::read_data_block(char key_type, byte block, byte key) //key: 'a' or 'b'
+void Tag_Actions::read_data_block(char key_type, byte block, byte *key) //key: 'a' or 'b'
 {
   packet[2]=0x0A; // length=10
   packet[3]=0x11; // command
-  if(key_type=='a || A')
+  if(key_type=='a' || 'A')
     packet[4]=0x00;
-  else if(key_type=='b || B')
+  else if(key_type=='b' || 'B')
     packet[4]=0x01;
   packet[5]=block;
   for(int i=6;i<12;i++)
@@ -157,13 +157,13 @@ void Tag_Actions::read_data_block(char key_type, byte block, byte key) //key: 'a
 }
 
 
-void Tag_Actions::write_data_block(char key_type, byte block, byte key, byte data_write)
+void Tag_Actions::write_data_block(char key_type, byte block, byte *key, byte *data_write)
 {
   packet[2]=0x1A;
   packet[3]=0x12;
-  if(key_type=='a || A')
+  if(key_type=='a' || 'A')
     packet[4]=0x00;
-  else if(key_type=='b || B')
+  else if(key_type=='b' || 'B')
     packet[4]=0x01;
   packet[5]=block;
   for(int i=6;i<12;i++)
@@ -207,13 +207,13 @@ void Tag_Actions::write_data_block(char key_type, byte block, byte key, byte dat
 }
 
 
-void Tag_Actions::init_value_block(char key_type, byte block, byte key, byte value)
+void Tag_Actions::init_value_block(char key_type, byte block, byte *key, byte *value)
 {
     packet[2]=0x0E;
     packet[3]=0x13;
-    if(key_type=='a || A')
+    if(key_type=='a' || 'A')
       packet[4]=0x00;
-    else if(key_type=='b || B')
+    else if(key_type=='b' || 'B')
       packet[4]=0x01;
     packet[5]=block;
     for(int i=6;i<12;i++)
@@ -256,13 +256,13 @@ void Tag_Actions::init_value_block(char key_type, byte block, byte key, byte val
 }
 
 
-void Tag_Actions::read_value_block(char key_type, byte block, byte key)
+void Tag_Actions::read_value_block(char key_type, byte block, byte *key)
 {
   packet[2]=0x0A;
   packet[3]=0x14;
-  if(key_type=='a || A')
+  if(key_type=='a' || 'A')
     packet[4]=0x00;
-  else if(key_type=='b || B')
+  else if(key_type=='b' || 'B')
     packet[4]=0x01;
   packet[5]=block;
   for(int i=6;i<12;i++)
@@ -306,13 +306,13 @@ void Tag_Actions::read_value_block(char key_type, byte block, byte key)
 }
 
 
-void Tag_Actions::increment_value(char key_type, byte block, byte key, byte value)
+void Tag_Actions::increment_value(char key_type, byte block, byte *key, byte *value)
 {
   packet[2]=0x0E;
   packet[3]=0x15;
-  if(key_type=='a || A')
+  if(key_type=='a' || 'A')
     packet[4]=0x00;
-  else if(key_type=='b || B')
+  else if(key_type=='b' || 'B')
     packet[4]=0x01;
   packet[5]=block;
   for(int i=6;i<12;i++)
@@ -355,13 +355,13 @@ void Tag_Actions::increment_value(char key_type, byte block, byte key, byte valu
 }
 
 
-void Tag_Actions::increment_value(char key_type, byte block, byte key, byte value)
+void Tag_Actions::decrement_value(char key_type, byte block, byte *key, byte *value)
 {
   packet[2]=0x0E;
   packet[3]=0x16;
-  if(key_type=='a || A')
+  if(key_type=='a' || 'A')
     packet[4]=0x00;
-  else if(key_type=='b || B')
+  else if(key_type=='b' || 'B')
     packet[4]=0x01;
   packet[5]=block;
   for(int i=6;i<12;i++)
