@@ -18,15 +18,11 @@ class Tag_Actions
     Serial serial;
 
     void checksum(byte a[]); //XOR from len to data i.e packet[2] to packet[len+1]
+    void packet_reset(); //initialises packet header and sets the rest to zero;
 
   public:
-    Tag_Actions()
-    {
-      packet[0]=0xAA;
-      packet[1]=0xBB;
-    }
-
-    void control_rf_transmit();
+    Tag_Actions();
+    void control_rf_transmit(bool switch);
     void select_mifare_card();
     void read_data_block();
     void write_data_block();
