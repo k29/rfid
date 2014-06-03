@@ -108,16 +108,16 @@ void Tag_Actions::select_mifare_card()
 }
 
 
-void Tag_Actions::read_data_block(char key_a_b, byte block, byte key) //key: 'a' or 'b'
+void Tag_Actions::read_data_block(char key_type, byte block, byte key) //key: 'a' or 'b'
 {
-  packet[2]=0x0C; // length=13
+  packet[2]=0x0A; // length=10
   packet[3]=0x11; // command
-  if(key_a_b=='a || A')
+  if(key_type=='a || A')
     packet[4]=0x00;
-  else if(key_a_b=='b || B')
+  else if(key_type=='b || B')
     packet[4]=0x01;
   packet[5]=block;
-  for(int i=6;i<13;i++)
+  for(int i=6;i<12;i++)
     packet[i]=key[i-6];
   checksum();
 
@@ -148,7 +148,7 @@ void Tag_Actions::read_data_block(char key_a_b, byte block, byte key) //key: 'a'
     printf("%x\t",packet_received[i]);
 
   cout<<"Thus the data in the block is: \n";
-  for(int i=5;i<18;i++)
+  for(int i=5;i<21;i++)
     printf("%x\n",packet_received[i]);
 
   cout<<"\n";
@@ -157,19 +157,19 @@ void Tag_Actions::read_data_block(char key_a_b, byte block, byte key) //key: 'a'
 }
 
 
-void Tag_Actions::write_data_block(char key_a_b, byte block, byte key, byte data_write)
+void Tag_Actions::write_data_block(char key_type, byte block, byte key, byte data_write)
 {
   packet[2]=0x1A;
   packet[3]=0x12;
-  if(key_a_b=='a || A')
+  if(key_type=='a || A')
     packet[4]=0x00;
-  else if(key_a_b=='b || B')
+  else if(key_type=='b || B')
     packet[4]=0x01;
   packet[5]=block;
-  for(int i=6;i<13;i++)
+  for(int i=6;i<12;i++)
     packet[i]=key[i-6];
-  for(int i=13;i<30;i++)
-    packet[i]=data_write[i-13];
+  for(int i=12;i<28;i++)
+    packet[i]=data_write[i-12];
   checksum();
 
   cout<<"Sending the packet: \n";
@@ -198,7 +198,7 @@ void Tag_Actions::write_data_block(char key_a_b, byte block, byte key, byte data
   if(packet_received[4]==0x00)
     cout<<"Writing success!!";
   else
-    cout<<"Oops!! Erroor in writing.";
+    cout<<"Oops!! Error in writing.";
 
   cout<<"\n";
   if(!flag)
@@ -207,19 +207,19 @@ void Tag_Actions::write_data_block(char key_a_b, byte block, byte key, byte data
 }
 
 
-void Tag_Actions::init_value_block(char key_a_b, byte block, byte key, byte value)
+void Tag_Actions::init_value_block(char key_type, byte block, byte key, byte value)
 {
     packet[2]=0x0E;
     packet[3]=0x13;
-    if(key_a_b=='a || A')
+    if(key_type=='a || A')
       packet[4]=0x00;
-    else if(key_a_b=='b || B')
+    else if(key_type=='b || B')
       packet[4]=0x01;
     packet[5]=block;
-    for(int i=6;i<13;i++)
+    for(int i=6;i<12;i++)
       packet[i]=key[i-6];
-    for(int i=13;i<17;i++)
-      packet[i]=value[i-13];
+    for(int i=12;i<16;i++)
+      packet[i]=value[i-12];
     checksum();
 
     cout<<"Sending the packet: \n";
@@ -248,9 +248,157 @@ void Tag_Actions::init_value_block(char key_a_b, byte block, byte key, byte valu
     if(packet_received[4]==0x00)
       cout<<"Init as value block success!!";
     else
-      cout<<"Oops!! Erroor in writing.";
+      cout<<"Oops!! Error in writing.";
 
     cout<<"\n";
     if(!flag)
       cout<<"Nothing to Read...\n";
+}
+
+
+void Tag_Actions::read_value_block(char key_type, byte block, byte key)
+{
+  packet[2]=0x0A;
+  packet[3]=0x14;
+  if(key_type=='a || A')
+    packet[4]=0x00;
+  else if(key_type=='b || B')
+    packet[4]=0x01;
+  packet[5]=block;
+  for(int i=6;i<12;i++)
+    packet[i]=key[i-6];
+  checksum();
+
+  cout<<"Sending the packet: \n";
+  for(int i=0;i<packet[2]+3;i++)
+  {
+    printf("%x\n",packet[i]);
+    serial.WriteByte((char)packet[i]);
+  }
+
+  cout<<"\nReading...\n";
+  bool flag=false;
+  byte temp_packet_read;
+  int i=0;
+  while(1)
+  {
+    if(serial.Read(&temp_packet_read,1)>0)
+    {
+      printf("%x\n",temp_packet_read);
+      packet_received[i]=temp_packet_read;
+      flag=true;
+    }
+    if(i>2 && i==packet_received[2]+2)
+      break;
+  }
+  cout<<"Hence the packet received is:\n";
+  for(int i=0;i<packet_received[2]+3;i++)
+    printf("%x\t",packet_received[i]);
+
+  cout<<"Thus the data in the block is: \n";
+  for(int i=5;i<9;i++)
+    printf("%x\n",packet_received[i]);
+
+
+  cout<<"\n";
+  if(!flag)
+    cout<<"Nothing to Read...\n";
+}
+
+
+void Tag_Actions::increment_value(char key_type, byte block, byte key, byte value)
+{
+  packet[2]=0x0E;
+  packet[3]=0x15;
+  if(key_type=='a || A')
+    packet[4]=0x00;
+  else if(key_type=='b || B')
+    packet[4]=0x01;
+  packet[5]=block;
+  for(int i=6;i<12;i++)
+    packet[i]=key[i-6];
+  for(int i=12;i<16;i++)
+    packet[i]=value[i-12];
+  checksum();
+
+  cout<<"Sending the packet: \n";
+  for(int i=0;i<packet[2]+3;i++)
+  {
+    printf("%x\n",packet[i]);
+    serial.WriteByte((char)packet[i]);
+  }
+
+  cout<<"\nReading...\n";
+  bool flag=false;
+  byte temp_packet_read;
+  int i=0;
+  while(1)
+  {
+    if(serial.Read(&temp_packet_read,1)>0)
+    {
+      printf("%x\n",temp_packet_read);
+      packet_received[i]=temp_packet_read;
+      flag=true;
+    }
+    if(i>2 && i==packet_received[2]+2)
+      break;
+  }
+
+  if(packet_received[4]==0x00)
+    cout<<"Increment value block success!!";
+  else
+    cout<<"Oops!! Error in writing.";
+
+  cout<<"\n";
+  if(!flag)
+    cout<<"Nothing to Read...\n";
+}
+
+
+void Tag_Actions::increment_value(char key_type, byte block, byte key, byte value)
+{
+  packet[2]=0x0E;
+  packet[3]=0x16;
+  if(key_type=='a || A')
+    packet[4]=0x00;
+  else if(key_type=='b || B')
+    packet[4]=0x01;
+  packet[5]=block;
+  for(int i=6;i<12;i++)
+    packet[i]=key[i-6];
+  for(int i=12;i<16;i++)
+    packet[i]=value[i-12];
+  checksum();
+
+  cout<<"Sending the packet: \n";
+  for(int i=0;i<packet[2]+3;i++)
+  {
+    printf("%x\n",packet[i]);
+    serial.WriteByte((char)packet[i]);
+  }
+
+  cout<<"\nReading...\n";
+  bool flag=false;
+  byte temp_packet_read;
+  int i=0;
+  while(1)
+  {
+    if(serial.Read(&temp_packet_read,1)>0)
+    {
+      printf("%x\n",temp_packet_read);
+      packet_received[i]=temp_packet_read;
+      flag=true;
+    }
+    if(i>2 && i==packet_received[2]+2)
+      break;
+  }
+
+  if(packet_received[4]==0x00)
+    cout<<"Decrement value block success!!";
+  else
+    cout<<"Oops!! Error in writing.";
+
+  cout<<"\n";
+  if(!flag)
+    cout<<"Nothing to Read...\n";
 }
