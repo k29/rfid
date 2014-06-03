@@ -353,4 +353,6 @@ namespace HAL
       }
       WriteByte('\n');
   }
+
+  
 } // namespace HAL

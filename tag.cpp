@@ -17,7 +17,7 @@ void Tag_Actions::packet_reset()
 {
   packet[0]=0xAA;
   packet[1]=0xBB;
-  for(int i=2;i<30;i++)
+  for(int i=0;i<30;i++)
     packet[i]=0;
 }
 
@@ -31,4 +31,25 @@ void Tag_Actions::control_rf_transmit(bool switch)
   else
     packet[4]=0x00;
   checksum(packet);
+  cout<<"Sending the packet: \n";
+  for(int i=0;i<packet[2]+2;i++)
+  {
+    cout<<packet[i]<<"\t";
+    serial.WriteByte((char)packet[i]);
+  }
+  cout<<"\nReading...";
+  int attempt=100;
+  bool flag=false;
+  while(attempt--)
+  {
+    if(Read(packet_received,1)>0)
+    {
+      for(int i=0;i<sizeof(packet_received);i++)
+        printf("%x\t",packet_received[i]);
+      flag=true;
+    }
+  }
+  cout<<"\n";
+  if(!flag)
+    cout<<"Nothing to Read...\n";
 }
