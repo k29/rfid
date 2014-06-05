@@ -134,32 +134,13 @@ void Tag_Actions::read_data_block(char key_type, byte block, byte *key) //key: '
     serial.WriteByte((char)packet[i]);
   }
 
-  cout<<"\nReading...\n";
-  bool flag=false;
-  byte temp_packet_read;
-  int i=0;
-  while(1)
-  {
-    if(serial.Read(&temp_packet_read,1)>0)
-    {
-      printf("%x\n",temp_packet_read);
-      packet_received[i]=temp_packet_read;
-      flag=true;
-    }
-    if(i>2 && i==packet_received[2]+2)
-      break;
-  }
-  cout<<"Hence the packet received is:\n";
-  for(int i=0;i<packet_received[2]+3;i++)
-    printf("%x\t",packet_received[i]);
+  cout<<"\nReading...";
+  Read_rfid();
 
   cout<<"Thus the data in the block is: \n";
   for(int i=5;i<21;i++)
     printf("%x\n",packet_received[i]);
 
-  cout<<"\n";
-  if(!flag)
-    cout<<"Nothing to Read...\n";
 }
 
 
@@ -185,32 +166,12 @@ void Tag_Actions::write_data_block(char key_type, byte block, byte *key, byte *d
     printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
-
   cout<<"\nReading...\n";
-  bool flag=false;
-  byte temp_packet_read;
-  int i=0;
-  while(1)
-  {
-    if(serial.Read(&temp_packet_read,1)>0)
-    {
-      printf("%x\n",temp_packet_read);
-      packet_received[i]=temp_packet_read;
-      flag=true;
-    }
-    if(i>2 && i==packet_received[2]+2)
-      break;
-  }
-
+  Read_rfid();
   if(packet_received[4]==0x00)
     cout<<"Writing success!!";
   else
     cout<<"Oops!! Error in writing.";
-
-  cout<<"\n";
-  if(!flag)
-    cout<<"Nothing to Read...\n";
-
 }
 
 
@@ -238,29 +199,11 @@ void Tag_Actions::init_value_block(char key_type, byte block, byte *key, byte *v
     }
 
     cout<<"\nReading...\n";
-    bool flag=false;
-    byte temp_packet_read;
-    int i=0;
-    while(1)
-    {
-      if(serial.Read(&temp_packet_read,1)>0)
-      {
-        printf("%x\n",temp_packet_read);
-        packet_received[i]=temp_packet_read;
-        flag=true;
-      }
-      if(i>2 && i==packet_received[2]+2)
-        break;
-    }
-
+    Read_rfid();
     if(packet_received[4]==0x00)
       cout<<"Init as value block success!!";
     else
       cout<<"Oops!! Error in writing.";
-
-    cout<<"\n";
-    if(!flag)
-      cout<<"Nothing to Read...\n";
 }
 
 
@@ -286,32 +229,10 @@ void Tag_Actions::read_value_block(char key_type, byte block, byte *key)
   }
 
   cout<<"\nReading...\n";
-  bool flag=false;
-  byte temp_packet_read;
-  int i=0;
-  while(1)
-  {
-    if(serial.Read(&temp_packet_read,1)>0)
-    {
-      printf("%x\n",temp_packet_read);
-      packet_received[i]=temp_packet_read;
-      flag=true;
-    }
-    if(i>2 && i==packet_received[2]+2)
-      break;
-  }
-  cout<<"Hence the packet received is:\n";
-  for(int i=0;i<packet_received[2]+3;i++)
-    printf("%x\t",packet_received[i]);
-
+  Read_rfid();
   cout<<"Thus the data in the block is: \n";
   for(int i=5;i<9;i++)
     printf("%x\n",packet_received[i]);
-
-
-  cout<<"\n";
-  if(!flag)
-    cout<<"Nothing to Read...\n";
 }
 
 
@@ -339,29 +260,12 @@ void Tag_Actions::increment_value(char key_type, byte block, byte *key, byte *va
   }
 
   cout<<"\nReading...\n";
-  bool flag=false;
-  byte temp_packet_read;
-  int i=0;
-  while(1)
-  {
-    if(serial.Read(&temp_packet_read,1)>0)
-    {
-      printf("%x\n",temp_packet_read);
-      packet_received[i]=temp_packet_read;
-      flag=true;
-    }
-    if(i>2 && i==packet_received[2]+2)
-      break;
-  }
+  Read_rfid();
 
   if(packet_received[4]==0x00)
     cout<<"Increment value block success!!";
   else
     cout<<"Oops!! Error in writing.";
-
-  cout<<"\n";
-  if(!flag)
-    cout<<"Nothing to Read...\n";
 }
 
 
@@ -389,27 +293,10 @@ void Tag_Actions::decrement_value(char key_type, byte block, byte *key, byte *va
   }
 
   cout<<"\nReading...\n";
-  bool flag=false;
-  byte temp_packet_read;
-  int i=0;
-  while(1)
-  {
-    if(serial.Read(&temp_packet_read,1)>0)
-    {
-      printf("%x\n",temp_packet_read);
-      packet_received[i]=temp_packet_read;
-      flag=true;
-    }
-    if(i>2 && i==packet_received[2]+2)
-      break;
-  }
+  Read_rfid();
 
   if(packet_received[4]==0x00)
     cout<<"Decrement value block success!!";
   else
     cout<<"Oops!! Error in writing.";
-
-  cout<<"\n";
-  if(!flag)
-    cout<<"Nothing to Read...\n";
 }
