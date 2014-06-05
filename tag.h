@@ -24,7 +24,9 @@ class Tag_Actions
     byte value[4];
 
     void checksum(); //XOR from len to data i.e packet[2] to packet[len+1]
+    bool isChecksum();
     void packet_reset(); //initialises packet header and sets the rest to zero;
+    void Read_rfid();
 
   public:
     Tag_Actions()
@@ -44,10 +46,6 @@ class Tag_Actions
     void decrement_value(char key_type, byte block, byte *key, byte *value);
 
 };
-
-
-
-
 
 
 #endif

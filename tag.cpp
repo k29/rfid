@@ -8,6 +8,49 @@ void Tag_Actions::checksum()
   packet[packet[2]+2]=s;
 }
 
+bool Tag_Actions::isChecksum()
+{
+  byte s=packet_received[2];
+  for(int i=3;i<packet_received[2]+2;i++)
+    s^=packet_received[i];
+  if(s==packet_received[2]+2)
+    return true;
+  else
+    return  false;
+}
+
+void Tag_Actions::Read_rfid()
+{
+  int count=0;
+  byte temp_packet_read;
+  int i=0;
+  while(1)
+  {
+    if(serial.Read(&temp_packet_read,1)>0)
+    {
+      //printf("%x\n",temp_packet_read);
+      packet_received[i]=temp_packet_read;
+      i++;
+      if(i>2 && i==packet_received[2]+3)
+        break;
+      count++;
+      if(count==100)
+        break;
+    }
+  }
+  //checksum...
+  if(isChecksum())
+  {
+    for(int i=0;i<packet_received[2]+3;i++)
+      printf("%x\t",packet_received[i]);
+  }
+  else
+    cout<<"\nchecksum not match\n";
+
+  cout<<"\n";
+  if(count==100)
+    cout<<"Nothing to Read...\n";
+}
 
 void Tag_Actions::packet_reset()
 {
@@ -29,36 +72,14 @@ void Tag_Actions::control_rf_transmit(bool state_switch)
     packet[4]=0x00;
 
   checksum();
-  //packet[5]=0x03;
-  cout<<"Sending the packet: \n";
+    cout<<"Sending the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
     printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
   cout<<"\nReading...\n";
-
-  bool flag=false;
-  byte temp_packet_read;
-  int i=0;
-  while(1)
-  {
-    if(serial.Read(&temp_packet_read,1)>0)
-    {
-      printf("%x\n",temp_packet_read);
-      packet_received[i]=temp_packet_read;
-      flag=true;
-    }
-    if(i>2 && i==packet_received[2]+2)
-      break;
-  }
-  cout<<"Hence the packet received is:\n";
-  for(int i=0;i<packet_received[2]+3;i++)
-    printf("%x\t",packet_received[i]);
-
-  cout<<"\n";
-  if(!flag)
-    cout<<"Nothing to Read...\n";
+  Read_rfid();
 }
 
 
@@ -77,32 +98,24 @@ void Tag_Actions::select_mifare_card()
   }
 
   cout<<"\nReading...\n";
-  bool flag=false;
-  byte temp_packet_read;
-  int i=0;
-  while(1)
-  {
-    if(serial.Read(&temp_packet_read,1)>0)
-    {
-      printf("%x\n",temp_packet_read);
-      packet_received[i]=temp_packet_read;
-      flag=true;
-    }
-    if(i>2 && i==packet_received[2]+2)
-      break;
-  }
-  cout<<"Hence the packet received is:\n";
-  for(int i=0;i<packet_received[2]+3;i++)
+  Read_rfid();
+  cout<<"Serial Number: ";
+  for(int i=5;i<9;i++)
     printf("%x\t",packet_received[i]);
-
-  cout<<"\n";
-  if(!flag)
-    cout<<"Nothing to Read...\n";
+  cout<<endl;
+  cout<<"Type: ";
+  if(packet_received[9]==0x00)
+    cout<<"Mifare Standard 1K(S50) card\n";
+  else if(packet_received[9]==0x01)
+    cout<<"Mifare Standard 4K(S70) card\n";
+  else if(packet_received[9]==0x02)
+    cout<<"Mifare ProX card\n";
 }
 
 
 void Tag_Actions::read_data_block(char key_type, byte block, byte *key) //key: 'a' or 'b'
 {
+  packet_reset();
   packet[2]=0x0A; // length=10
   packet[3]=0x11; // command
   if(key_type=='a' || 'A')
@@ -152,6 +165,7 @@ void Tag_Actions::read_data_block(char key_type, byte block, byte *key) //key: '
 
 void Tag_Actions::write_data_block(char key_type, byte block, byte *key, byte *data_write)
 {
+  packet_reset();
   packet[2]=0x1A;
   packet[3]=0x12;
   if(key_type=='a' || 'A')
@@ -202,6 +216,7 @@ void Tag_Actions::write_data_block(char key_type, byte block, byte *key, byte *d
 
 void Tag_Actions::init_value_block(char key_type, byte block, byte *key, byte *value)
 {
+    packet_reset();
     packet[2]=0x0E;
     packet[3]=0x13;
     if(key_type=='a' || 'A')
@@ -251,6 +266,7 @@ void Tag_Actions::init_value_block(char key_type, byte block, byte *key, byte *v
 
 void Tag_Actions::read_value_block(char key_type, byte block, byte *key)
 {
+  packet_reset();
   packet[2]=0x0A;
   packet[3]=0x14;
   if(key_type=='a' || 'A')
@@ -301,6 +317,7 @@ void Tag_Actions::read_value_block(char key_type, byte block, byte *key)
 
 void Tag_Actions::increment_value(char key_type, byte block, byte *key, byte *value)
 {
+  packet_reset();
   packet[2]=0x0E;
   packet[3]=0x15;
   if(key_type=='a' || 'A')
@@ -350,6 +367,7 @@ void Tag_Actions::increment_value(char key_type, byte block, byte *key, byte *va
 
 void Tag_Actions::decrement_value(char key_type, byte block, byte *key, byte *value)
 {
+  packet_reset();
   packet[2]=0x0E;
   packet[3]=0x16;
   if(key_type=='a' || 'A')
