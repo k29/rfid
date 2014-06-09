@@ -1,3 +1,5 @@
+//used for serial open, read write using POSIX. As of configured for data communication between FreindlyARM to
+//MF-800
 #ifndef __SERIAL_H__
 #define __SERIAL_H__
 
@@ -59,7 +61,7 @@ namespace HAL
       int ReadByte(void);
       void WriteString(std::string s);
       void WriteGen(void *buffer, int nbyte);
-      
+
   }; // class Serial
 } // namespace HAL
 

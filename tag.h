@@ -1,3 +1,4 @@
+//contains all the actions that can be used on the tag using MF-800
 #ifndef __TAG_H__
 #define __TAG_H__
 

@@ -18,9 +18,7 @@ int main()
     cout<<"Port could not open\n";
     return 1;
   }
-  else
   cout<<"Port open\n";
   tag.control_rf_transmit(true);
-  tag.select_mifare_card();
   return 0;
 }
