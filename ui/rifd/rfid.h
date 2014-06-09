@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include "tag.h"
 #include "serial.h"
+#include <QComboBox>
+#include <QStackedWidget>
+#include <QStackedLayout>
 
 namespace Ui {
 class rfid;
