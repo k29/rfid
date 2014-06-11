@@ -32,8 +32,7 @@ public:
     QWidget *centralWidget;
     QStackedWidget *stackedWidget;
     QWidget *Scan;
-    QPushButton *pushButton_scan;
-    QLabel *label;
+    QLabel *label_scanStatus;
     QWidget *Options;
     QPushButton *pushButton_2;
     QPushButton *pushButton_3;
@@ -57,12 +56,9 @@ public:
         stackedWidget->setGeometry(QRect(20, 0, 631, 441));
         Scan = new QWidget();
         Scan->setObjectName(QStringLiteral("Scan"));
-        pushButton_scan = new QPushButton(Scan);
-        pushButton_scan->setObjectName(QStringLiteral("pushButton_scan"));
-        pushButton_scan->setGeometry(QRect(60, 40, 99, 27));
-        label = new QLabel(Scan);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(280, 50, 221, 17));
+        label_scanStatus = new QLabel(Scan);
+        label_scanStatus->setObjectName(QStringLiteral("label_scanStatus"));
+        label_scanStatus->setGeometry(QRect(160, 130, 221, 17));
         stackedWidget->addWidget(Scan);
         Options = new QWidget();
         Options->setObjectName(QStringLiteral("Options"));
@@ -109,8 +105,7 @@ public:
     void retranslateUi(QMainWindow *rfid)
     {
         rfid->setWindowTitle(QApplication::translate("rfid", "rfid", 0));
-        pushButton_scan->setText(QApplication::translate("rfid", "Scan...", 0));
-        label->setText(QApplication::translate("rfid", "No RFID Tag Detected!!", 0));
+        label_scanStatus->setText(QApplication::translate("rfid", "No RFID Tag Detected!!", 0));
         pushButton_2->setText(QApplication::translate("rfid", "Init", 0));
         pushButton_3->setText(QApplication::translate("rfid", "Install", 0));
         pushButton_4->setText(QApplication::translate("rfid", "Reuse", 0));
