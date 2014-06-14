@@ -27,6 +27,8 @@ private:
     bool install_flag;
     bool use_flag;
 
+    void initial_scanRfid()
+
 };
 
 #endif // RFID_H

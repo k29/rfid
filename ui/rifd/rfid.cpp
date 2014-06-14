@@ -11,6 +11,8 @@ rfid::rfid(QWidget *parent) :
     init_flag=false;
     install_flag=false;
     use_flag=false;
+
+    initial_scanRfid(); // does the initial scan in a while loopa and then calls a funciton which scans in a timer.
 }
 
 rfid::~rfid()
