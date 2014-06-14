@@ -22,12 +22,16 @@ public:
 
 private:
     Ui::rfid *ui;
+
+    Tag_Actions tag;
+    
     //flags
     bool init_flag;
     bool install_flag;
     bool use_flag;
 
-    void initial_scanRfid()
+    void initial_scanRfid();
+    void port_open();
 
 };
 

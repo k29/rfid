@@ -12,10 +12,32 @@ rfid::rfid(QWidget *parent) :
     install_flag=false;
     use_flag=false;
 
-    initial_scanRfid(); // does the initial scan in a while loopa and then calls a funciton which scans in a timer.
+    port_open();
 }
 
 rfid::~rfid()
 {
     delete ui;
+}
+
+void rfid::port_open()
+{
+	Tag_Actions tag;
+  	if(!tag.serial.Open("/dev/ttySAC1",19200))
+  	{
+    	cout<<"Port could not open\n";
+    	return 1;
+  	}
+  	cout<<"Port open\n";
+	initial_scanRfid(); // does the initial scan in a while loop and then calls a funciton which scans in a timer.
+}
+
+void rfid::initial_scanRfid()
+{
+	while(1)
+	{
+		tag.control_rf_transmit(true);
+		tag.select_mifare_card();
+		
+	}
 }

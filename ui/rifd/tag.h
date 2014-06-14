@@ -16,8 +16,7 @@ using namespace std;
 class Tag_Actions
 {
   private:
-    byte packet[30];
-    byte packet_received[30];
+    
     char key_type;
     byte block;
     byte key[6];
@@ -35,6 +34,9 @@ class Tag_Actions
     {
         packet_reset();
     }
+
+    byte packet[30];
+    byte packet_received[30];
 
     Serial serial;
 
