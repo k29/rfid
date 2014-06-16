@@ -29,9 +29,12 @@ private:
     bool init_flag;
     bool install_flag;
     bool use_flag;
+    byte serialNumber[4];
+    byte type;
 
     void initial_scanRfid();
     void port_open();
+    void periodic_scanRfid();
 
 };
 
