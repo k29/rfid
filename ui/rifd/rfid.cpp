@@ -1,5 +1,6 @@
 #include "rfid.h"
 #include "ui_rfid.h"
+#include "login.h"
 #include <QTimer>
 #include <QDebug>
 
@@ -15,7 +16,6 @@ rfid::rfid(QWidget *parent) :
     install_flag=false;
     use_flag=false;
     ui->stackedWidget->setCurrentWidget(ui->Scan);
-    //port_open();
 }
 
 rfid::~rfid()
@@ -28,60 +28,15 @@ void rfid::port_open()
     if(!tag.serial.Open("/dev/ttySAC1",19200))
     {
         qDebug()<<"Port could not open\n";
-        printf("port could not open!!");
-        msgBox.setText("Error, Port could not open...trying again!!");
+        msgBox.setText("Error, Port could not open...try again!!");
         msgBox.exec();
     }
     else
-    {
-        qDebug()<<"Port open\n";
-        printf("port open!!");
-        initial_scanRfid(); // does the initial scan in a while loop and then calls a funciton which scans in a timer.
-    }
+        qDebug()<<"port open!!!";
 }
 
-void rfid::initial_scanRfid()
-{
-    while(1)
-    {
-        tag.control_rf_transmit(true);
-        if(!tag.packet_received[4]==0x00)
-        {
-            msgBox.setText("Error, Control Transmit error. Try Again");
-            msgBox.exec();
-            qDebug()<<" control tranmit error!! try again";
-            continue;
-        }
 
-        tag.select_mifare_card();
-        for(int i=0;i<4;i++)
-            serialNumber[i]=tag.packet_received[i+5];
-
-        type=tag.packet_received[9];
-        if(type==0x00)
-        {
-           qDebug()<<"Mifare Standard 1K(S50) card\n";
-           break;
-        }
-        else if(type==0x01)
-        {
-            qDebug()<<"Mifare Standard 4K(S70) card\n";
-            break;
-        }
-        else if(type==0x02)
-        {
-           qDebug()<<"Mifare ProX card\n";
-           break;
-        }
-    }
-    periodic_scanRfid();
-
-    qDebug()<<"going to options widget!!";
-    ui->stackedWidget->setCurrentWidget(ui->Options);
-    choose_options();
-}
-
-void rfid::periodic_scanRfid()
+void rfid::periodic_scanRfid()  //to be done once the therapy starts!!
 {
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -103,22 +58,85 @@ void rfid::update()
 
 }
 
-void rfid::choose_options()
-{
-    qDebug()<<"yay!!";
-    this->close();
-    msgBox.setText("yay!! done reached final stage!!");
-    //if(init_flag==false && install_flag==false && use_flag)
-}
-
-
 void rfid::onControlRFtransmit_clicked()
 {
+    port_open();
+    tag.control_rf_transmit(true);
+    if(!tag.packet_received[4]==0x00)
+    {
+        ui->label_scanStatus->setText("RF Transmit successfull");
+        qDebug()<<" control tranmit error!! try again";
+    }
+    else
+    {
+        qDebug()<<"control RF transmit true set!!";
+        ui->pushButton_selectMifare->setEnabled(true);
+        ui->label_scanStatus->setText("RF Transmit successfull");
+     }
 
 }
 
 
 void rfid::onSelectMifare_clicked()
 {
+    tag.select_mifare_card();
+    if(!tag.packet_received[4]==0x00)
+    {
+        ui->label_scanStatus->setText("Tag Reading Failed!! ");
+        qDebug()<<"Select mifare card error, try again";
+        ui->label_serial->setEnabled(false);
+        ui->label_type->setEnabled(false);
+        ui->lineEdit_serial->setEnabled(false);
+        ui->lineEdit_type->setEnabled(false);
+    }
+    else
+    {
+        qDebug()<<"comminication with card successfull";
+        ui->label_serial->setEnabled(true);
+        ui->label_type->setEnabled(true);
+        ui->lineEdit_serial->setEnabled(true);
+        ui->lineEdit_type->setEnabled(true);
+        ui->label_scanStatus->setText("comminication with card successfull");
+     }
 
+    QString serial_string;
+    for(int i=0;i<4;i++)
+    {
+        serialNumber[i]=tag.packet_received[i+5];
+        serial_string.append(serialNumber[i]);
+    }
+
+    ui->lineEdit_serial->setText(serial_string);
+
+    type=tag.packet_received[9];
+    if(type==0x00)
+    {
+       qDebug()<<"Mifare Standard 1K(S50) card\n";
+       ui->lineEdit_type->setText("Mifare Standard 1K(S50) card");
+    }
+    else if(type==0x01)
+    {
+        qDebug()<<"Mifare Standard 4K(S70) card\n";
+        ui->lineEdit_type->setText("Mifare Standard 4K(S70) card");
+    }
+    else if(type==0x02)
+    {
+       qDebug()<<"Mifare ProX card\n";
+       ui->lineEdit_type->setText("Mifare ProX card");
+    }
+    ui->pushButton_options->setEnabled(true);
+}
+
+
+void rfid::onOptions_clicked()
+{
+    ui->stackedWidget->setCurrentWidget(ui->Options);
+}
+
+
+void rfid::onBack_clicked()
+{
+    this->close();
+    login l;
+    l.enter_three();
 }

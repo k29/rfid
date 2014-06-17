@@ -48,6 +48,8 @@ private:
 private slots:
     void onControlRFtransmit_clicked();
     void onSelectMifare_clicked();
+    void onOptions_clicked();
+    void onBack_clicked();
 
 };
 

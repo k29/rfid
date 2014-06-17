@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>685</width>
-    <height>517</height>
+    <width>756</width>
+    <height>536</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>0</y>
+      <x>10</x>
+      <y>10</y>
       <width>621</width>
       <height>441</height>
      </rect>
@@ -31,7 +31,7 @@
       <property name="geometry">
        <rect>
         <x>210</x>
-        <y>30</y>
+        <y>0</y>
         <width>271</width>
         <height>61</height>
        </rect>
@@ -49,8 +49,8 @@
      <widget class="QPushButton" name="pushButton_controlRFtransmit">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>130</y>
+        <x>20</x>
+        <y>70</y>
         <width>271</width>
         <height>111</height>
        </rect>
@@ -64,12 +64,18 @@
       <property name="text">
        <string>Control RF Transmit</string>
       </property>
+      <property name="default">
+       <bool>false</bool>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
      </widget>
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>30</y>
+        <x>40</x>
+        <y>10</y>
         <width>101</width>
         <height>51</height>
        </rect>
@@ -85,10 +91,13 @@
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_selectMifare">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>250</y>
+        <x>20</x>
+        <y>190</y>
         <width>271</width>
         <height>111</height>
        </rect>
@@ -102,6 +111,74 @@
       <property name="text">
        <string>Select Mifare Card</string>
       </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_options">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>320</y>
+        <width>271</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Options</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>190</y>
+        <width>301</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_serial">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Serial: </string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineEdit_serial">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_type">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Type:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="lineEdit_type">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="Options">
@@ -171,13 +248,32 @@
      </widget>
     </widget>
    </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>10</y>
+      <width>93</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Bitstream Charter</family>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Back</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>685</width>
+     <width>756</width>
      <height>25</height>
     </rect>
    </property>
@@ -203,7 +299,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>277</x>
-     <y>224</y>
+     <y>218</y>
     </hint>
     <hint type="destinationlabel">
      <x>664</x>
@@ -218,8 +314,8 @@
    <slot>onSelectMifare_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>303</x>
-     <y>335</y>
+     <x>293</x>
+     <y>345</y>
     </hint>
     <hint type="destinationlabel">
      <x>667</x>
@@ -227,9 +323,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_options</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onOptions_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>272</x>
+     <y>415</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>668</x>
+     <y>427</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onBack_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>683</x>
+     <y>99</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>708</x>
+     <y>165</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onControlRFtransmit_clicked()</slot>
   <slot>onSelectMifare_clicked()</slot>
+  <slot>onOptions_clicked()</slot>
+  <slot>onBack_clicked()</slot>
  </slots>
 </ui>
