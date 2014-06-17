@@ -28,11 +28,13 @@ class Tag_Actions
     bool isChecksum();
     void packet_reset(); //initialises packet header and sets the rest to zero;
     void Read_rfid();
+    void packet_received_reset();
 
   public:
     Tag_Actions()
     {
         packet_reset();
+        packet_received_reset();
     }
 
     byte packet[30];

@@ -28,7 +28,7 @@ void Tag_Actions::Read_rfid()
   {
     if(serial.Read(&temp_packet_read,1)>0)
     {
-      //printf("%x\n",temp_packet_read);
+      printf("%x\n",temp_packet_read);
       packet_received[i]=temp_packet_read;
       i++;
       if(i>2 && i==packet_received[2]+3)
@@ -39,13 +39,13 @@ void Tag_Actions::Read_rfid()
     }
   }
   //checksum...
-  if(isChecksum())
+  //if(isChecksum())
   {
     for(int i=0;i<packet_received[2]+3;i++)
       printf("%x\t",packet_received[i]);
   }
-  else
-    cout<<"\nchecksum not match\n";
+  //else
+    //cout<<"\nchecksum not match\n";
 
   cout<<"\n";
   if(count==100)
@@ -55,11 +55,16 @@ void Tag_Actions::Read_rfid()
 void Tag_Actions::packet_reset()
 {
   for(int i=0;i<30;i++)
-    packet[i]=0;
+    packet[i]=0xff;
   packet[0]=0xAA;
   packet[1]=0xBB;
 }
 
+void Tag_Actions::packet_received_reset()
+{
+    for(int i=0;i<sizeof(packet_received);i++)
+        packet_received[i]=0xff;
+}
 
 void Tag_Actions::control_rf_transmit(bool state_switch)
 {
@@ -80,6 +85,7 @@ void Tag_Actions::control_rf_transmit(bool state_switch)
   }
   cout<<"\nReading...\n";
   Read_rfid();
+  
 }
 
 
@@ -99,17 +105,17 @@ void Tag_Actions::select_mifare_card()
 
   cout<<"\nReading...\n";
   Read_rfid();
-  cout<<"Serial Number: ";
-  for(int i=5;i<9;i++)
-    printf("%x\t",packet_received[i]);
-  cout<<endl;
-  cout<<"Type: ";
-  if(packet_received[9]==0x00)
-    cout<<"Mifare Standard 1K(S50) card\n";
-  else if(packet_received[9]==0x01)
-    cout<<"Mifare Standard 4K(S70) card\n";
-  else if(packet_received[9]==0x02)
-    cout<<"Mifare ProX card\n";
+//  cout<<"Serial Number: ";
+//  for(int i=5;i<9;i++)
+//    printf("%x\t",packet_received[i]);
+//  cout<<endl;
+//  cout<<"Type: ";
+//  if(packet_received[9]==0x00)
+//    cout<<"Mifare Standard 1K(S50) card\n";
+//  else if(packet_received[9]==0x01)
+//    cout<<"Mifare Standard 4K(S70) card\n";
+//  else if(packet_received[9]==0x02)
+//    cout<<"Mifare ProX card\n";
 }
 
 

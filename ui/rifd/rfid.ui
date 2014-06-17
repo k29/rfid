@@ -19,7 +19,7 @@
      <rect>
       <x>20</x>
       <y>0</y>
-      <width>631</width>
+      <width>621</width>
       <height>441</height>
      </rect>
     </property>
@@ -30,14 +30,77 @@
      <widget class="QLabel" name="label_scanStatus">
       <property name="geometry">
        <rect>
-        <x>160</x>
-        <y>130</y>
-        <width>221</width>
-        <height>17</height>
+        <x>210</x>
+        <y>30</y>
+        <width>271</width>
+        <height>61</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>16</pointsize>
+       </font>
       </property>
       <property name="text">
        <string>No RFID Tag Detected!!</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_controlRFtransmit">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>130</y>
+        <width>271</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Control RF Transmit</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>101</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Status:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_selectMifare">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>250</y>
+        <width>271</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Select Mifare Card</string>
       </property>
      </widget>
     </widget>
@@ -124,12 +187,49 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_controlRFtransmit</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onControlRFtransmit_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>277</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>664</x>
+     <y>224</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_selectMifare</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onSelectMifare_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>303</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>667</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onControlRFtransmit_clicked()</slot>
+  <slot>onSelectMifare_clicked()</slot>
+ </slots>
 </ui>
