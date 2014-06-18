@@ -43,18 +43,20 @@ private:
 
     byte serialNumber[4];
     byte type;
-    byte *new_key_A;
-
+    byte new_key_A[6];
+    byte rev;
 
     void initial_scanRfid();
     void port_open();
     void periodic_scanRfid();
     void update();
     void choose_options();
+    void encrypt_key();
+    byte reverse(byte);
 
-    byte transport_config;
-    byte default_key_A;
-    byte default_key_B;
+    byte transport_config[6];
+    byte default_key_A[6];
+    byte default_key_B[6];
 
 private slots:
     void onControlRFtransmit_clicked();
@@ -62,8 +64,8 @@ private slots:
     void onOptions_clicked();
     void onBack_clicked();
     void onInit_clicked();
-    byte* encrypt_key();
-    byte reverse(byte);
+    void onRead_clicked();
+
 
 };
 

@@ -18,9 +18,16 @@ rfid::rfid(QWidget *parent) :
     ui->stackedWidget->setCurrentWidget(ui->Scan);
 
     //init the keys
-    transport_config=0xff078029;
-    default_key_A=0xffffffffffff;
-    default_key_B=0xffffffffffff;
+    transport_config[0]=0xff;
+    transport_config[1]=0x07;
+    transport_config[2]=0x80;
+    transport_config[3]=0x29;
+    for(int i=0;i<6;i++)
+    {
+        default_key_A[i]=0xff;
+        default_key_B[i]=0xff;
+    }
+
 }
 
 rfid::~rfid()
@@ -156,33 +163,36 @@ void rfid::choose_options()
 
 byte rfid::reverse(byte num)
 {
-    int rev=0x00;
-    int digit=0x00;
+    rev=0x00;
+    byte digit=0x00;
     while(num!=0x00)
     {
         digit=num%0x10;
         rev=rev*0x10+digit;
-        num==num/0x10;
+        num=num/0x10;
     }
     return rev;
 }
 
-byte* rfid::encrypt_key()
+void rfid::encrypt_key()
 {
-    byte new_arr[6];
     for(int i=0;i<4;i++)
-        new_arr[i]=reverse(serialNumber[i]);
-    new_arr[5]=serialNumber[1]+serialNumber[3];
-    new_arr[6]=serialNumber[2]+serialNumber[4];
-    return new_arr;
+        new_key_A[i]=reverse(serialNumber[i]);
+    new_key_A[4]=serialNumber[0]+serialNumber[2];
+    new_key_A[5]=serialNumber[1]+serialNumber[3];
+    for(int i=0;i<6;i++)
+        qDebug()<<"new_key_A"<<new_key_A[i];
+
 }
 
 void rfid::onInit_clicked()
 {
+    qDebug()<<"in init clicked";
     /////////////////////////////////////
     /* defining the sector trailer for sector 0,1,2,3.... new_key_A(a function of the serial number),access_conditions(transport),new_key_B(useless)*/
     ////////////////////////////////////
-    new_key_A=encrypt_key();
+    encrypt_key();
+    qDebug()<<"new key A: "<<new_key_A;  // 0xe9, 0x08, 0x86, 0xae, 0x06, 0x6a (for the blue tag)
     byte new_key_B[]={0xff,0xff,0xff,0xff,0xff,0xff};
     byte data_write_sectorTrailer[16];
     for(int i=0;i<6;i++)
@@ -193,20 +203,26 @@ void rfid::onInit_clicked()
     data_write_sectorTrailer[9]=0x29;
     for(int i=10;i<16;i++)
         data_write_sectorTrailer[i]=new_key_B[i-10];
-    qDebug()<<"data writing: ";
+    qDebug()<<data_write_sectorTrailer;
     ui->textEdit->setText("writing data...\n");
-    for(int i=0;i<16;i++)
-        qDebug()<<data_write_sectorTrailer[i]<<"\t";
-    tag.write_data_block(0,3,&transport_config,data_write_sectorTrailer);
+
+    qDebug()<<"writing to sector trailer 0";
+    tag.write_data_block(0,3,default_key_A,data_write_sectorTrailer);
     if(tag.packet_received[4]==0x00)
         ui->textEdit->append("sector trailer 0 written\n");
-    tag.write_data_block(0,7,&transport_config,data_write_sectorTrailer);
+
+    qDebug()<<"writing to sector trailer 1";
+    tag.write_data_block(0,7,default_key_A,data_write_sectorTrailer);
     if(tag.packet_received[4]==0x00)
         ui->textEdit->append("sector trailer 1 written\n");
-    tag.write_data_block(0,11,&transport_config,data_write_sectorTrailer);
+
+    qDebug()<<"writing to sector trailer 2";
+    tag.write_data_block(0,11,default_key_A,data_write_sectorTrailer);
     if(tag.packet_received[4]==0x00)
         ui->textEdit->append("sector trailer 2 written\n");
-    tag.write_data_block(0,15,&transport_config,data_write_sectorTrailer);
+
+    qDebug()<<"writing to sector trailer 3";
+    tag.write_data_block(0,15,default_key_A,data_write_sectorTrailer);
     if(tag.packet_received[4]==0x00)
         ui->textEdit->append("sector trailer 3 written\n");
 
@@ -214,6 +230,7 @@ void rfid::onInit_clicked()
     //////////////////////////////////////
     /*Storing Flags in block 1..... init_flag, install_flag, use_flag,0x00,0x02,0x09,Grey orange...*/
     /////////////////////////////////////
+    qDebug()<<"writing to block 1";
     byte data_write_block1[]={true,false,false,0x00,0x02,0x09,'g','r','e','y','o','r','a','n','g','e'};
     tag.write_data_block(0,1,new_key_A,data_write_block1);
     if(tag.packet_received[4]==0x00)
@@ -222,6 +239,7 @@ void rfid::onInit_clicked()
     /////////////////////////////////////
     /*Storing serial key in block 2*/
     ////////////////////////////////////
+    qDebug()<<"writing to block 2";
     byte *data_write_block2=serialNumber;
     tag.write_data_block(0,2,new_key_A,data_write_block2);
     if(tag.packet_received[4]==0x00)
