@@ -46,11 +46,11 @@ void Tag_Actions::Read_rfid()
       printf("%x\t",packet_received[i]);
   }
   //else
-    //cout<<"\nchecksum not match\n";
+    //qDebug()<<"\nchecksum not match\n";
 
-  cout<<"\n";
+  qDebug()<<"\n";
   if(count==100)
-    cout<<"Nothing to Read...\n";
+    qDebug()<<"Nothing to Read...\n";
 }
 
 void Tag_Actions::packet_reset()
@@ -78,13 +78,13 @@ void Tag_Actions::control_rf_transmit(bool state_switch)
     packet[4]=0x00;
 
   checksum();
-    cout<<"Sending the packet: \n";
+    qDebug()<<"Sending the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
     printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
-  cout<<"\nReading...\n";
+  qDebug()<<"\nReading...\n";
   Read_rfid();
   
 }
@@ -97,14 +97,14 @@ void Tag_Actions::select_mifare_card()
   packet[3]=0x10;
   checksum();
 
-  cout<<"Sending the packet: \n";
+  qDebug()<<"Sending the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
     printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
 
-  cout<<"\nReading...\n";
+  qDebug()<<"\nReading...\n";
   Read_rfid();
 }
 
@@ -123,14 +123,14 @@ void Tag_Actions::read_data_block(char key_type, byte block, byte *key) //key: '
     packet[i]=key[i-6];
   checksum();
 
-  cout<<"Sending the packet: \n";
+  qDebug()<<"Sending the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
     printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
 
-  cout<<"\nReading...";
+  qDebug()<<"\nReading...";
   Read_rfid();
 
   qDebug()<<"Thus the data in the block is: \n";
@@ -156,18 +156,18 @@ void Tag_Actions::write_data_block(char key_type, byte block, byte *key, byte *d
     packet[i]=data_write[i-12];
   checksum();
 
-  cout<<"Sending the packet: \n";
+  qDebug()<<"Writing the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
-    printf("%x\n",packet[i]);
+    printf("%x\t",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
-  cout<<"\nReading...\n";
+  qDebug()<<"\nReading...\n";
   Read_rfid();
   if(packet_received[4]==0x00)
-    cout<<"Writing success!!";
+    qDebug()<<"Writing success!!";
   else
-    cout<<"Oops!! Error in writing.";
+    qDebug()<<"Oops!! Error in writing.";
 }
 
 
@@ -187,19 +187,19 @@ void Tag_Actions::init_value_block(char key_type, byte block, byte *key, byte *v
       packet[i]=value[i-12];
     checksum();
 
-    cout<<"Sending the packet: \n";
+    qDebug()<<"Sending the packet: \n";
     for(int i=0;i<packet[2]+3;i++)
     {
       printf("%x\n",packet[i]);
       serial.WriteByte((char)packet[i]);
     }
 
-    cout<<"\nReading...\n";
+    qDebug()<<"\nReading...\n";
     Read_rfid();
     if(packet_received[4]==0x00)
-      cout<<"Init as value block success!!";
+      qDebug()<<"Init as value block success!!";
     else
-      cout<<"Oops!! Error in writing.";
+      qDebug()<<"Oops!! Error in writing.";
 }
 
 
@@ -217,16 +217,16 @@ void Tag_Actions::read_value_block(char key_type, byte block, byte *key)
     packet[i]=key[i-6];
   checksum();
 
-  cout<<"Sending the packet: \n";
+  qDebug()<<"Sending the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
     printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
 
-  cout<<"\nReading...\n";
+  qDebug()<<"\nReading...\n";
   Read_rfid();
-  cout<<"Thus the data in the block is: \n";
+  qDebug()<<"Thus the data in the block is: \n";
   for(int i=5;i<9;i++)
     printf("%x\n",packet_received[i]);
 }
@@ -248,20 +248,20 @@ void Tag_Actions::increment_value(char key_type, byte block, byte *key, byte *va
     packet[i]=value[i-12];
   checksum();
 
-  cout<<"Sending the packet: \n";
+  qDebug()<<"Sending the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
     printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
 
-  cout<<"\nReading...\n";
+  qDebug()<<"\nReading...\n";
   Read_rfid();
 
   if(packet_received[4]==0x00)
-    cout<<"Increment value block success!!";
+    qDebug()<<"Increment value block success!!";
   else
-    cout<<"Oops!! Error in writing.";
+    qDebug()<<"Oops!! Error in writing.";
 }
 
 
@@ -281,19 +281,19 @@ void Tag_Actions::decrement_value(char key_type, byte block, byte *key, byte *va
     packet[i]=value[i-12];
   checksum();
 
-  cout<<"Sending the packet: \n";
+  qDebug()<<"Sending the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
     printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
 
-  cout<<"\nReading...\n";
+  qDebug()<<"\nReading...\n";
   Read_rfid();
 
   if(packet_received[4]==0x00)
-    cout<<"Decrement value block success!!";
+    qDebug()<<"Decrement value block success!!";
   else
-    cout<<"Oops!! Error in writing.";
+    qDebug()<<"Oops!! Error in writing.";
 }
 

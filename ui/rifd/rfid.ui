@@ -381,6 +381,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onRead_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>138</x>
+     <y>354</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>734</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onControlRFtransmit_clicked()</slot>
@@ -388,5 +404,6 @@
   <slot>onOptions_clicked()</slot>
   <slot>onBack_clicked()</slot>
   <slot>onInit_clicked()</slot>
+  <slot>onRead_clicked()</slot>
  </slots>
 </ui>
