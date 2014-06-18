@@ -1,5 +1,6 @@
 #include "tag.h"
 
+
 void Tag_Actions::checksum()
 {
   byte s=packet[2];
@@ -28,7 +29,7 @@ void Tag_Actions::Read_rfid()
   {
     if(serial.Read(&temp_packet_read,1)>0)
     {
-      printf("%x\n",temp_packet_read);
+      //printf("%x\n",temp_packet_read);
       packet_received[i]=temp_packet_read;
       i++;
       if(i>2 && i==packet_received[2]+3)
@@ -105,17 +106,6 @@ void Tag_Actions::select_mifare_card()
 
   cout<<"\nReading...\n";
   Read_rfid();
-//  cout<<"Serial Number: ";
-//  for(int i=5;i<9;i++)
-//    printf("%x\t",packet_received[i]);
-//  cout<<endl;
-//  cout<<"Type: ";
-//  if(packet_received[9]==0x00)
-//    cout<<"Mifare Standard 1K(S50) card\n";
-//  else if(packet_received[9]==0x01)
-//    cout<<"Mifare Standard 4K(S70) card\n";
-//  else if(packet_received[9]==0x02)
-//    cout<<"Mifare ProX card\n";
 }
 
 
@@ -143,7 +133,7 @@ void Tag_Actions::read_data_block(char key_type, byte block, byte *key) //key: '
   cout<<"\nReading...";
   Read_rfid();
 
-  cout<<"Thus the data in the block is: \n";
+  qDebug()<<"Thus the data in the block is: \n";
   for(int i=5;i<21;i++)
     printf("%x\n",packet_received[i]);
 

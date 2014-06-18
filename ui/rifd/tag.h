@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "serial.h"
+#include <QDebug>
 
 typedef unsigned char byte;
 using namespace HAL;

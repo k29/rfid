@@ -43,6 +43,8 @@ private:
 
     byte serialNumber[4];
     byte type;
+    byte *new_key_A;
+
 
     void initial_scanRfid();
     void port_open();

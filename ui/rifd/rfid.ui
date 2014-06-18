@@ -234,6 +234,16 @@
        <string>Read</string>
       </property>
      </widget>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>30</y>
+        <width>241</width>
+        <height>311</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="Read">
      <widget class="QLineEdit" name="lineEdit">
