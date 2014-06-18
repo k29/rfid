@@ -11,6 +11,10 @@
 #include <QStackedLayout>
 #include <QMessageBox>
 
+#define no_of_use 10
+
+
+
 namespace Ui {
 class rfid;
 }
@@ -36,6 +40,7 @@ private:
     bool init_flag;
     bool install_flag;
     bool use_flag;
+
     byte serialNumber[4];
     byte type;
 
@@ -45,11 +50,18 @@ private:
     void update();
     void choose_options();
 
+    byte transport_config;
+    byte default_key_A;
+    byte default_key_B;
+
 private slots:
     void onControlRFtransmit_clicked();
     void onSelectMifare_clicked();
     void onOptions_clicked();
     void onBack_clicked();
+    void onInit_clicked();
+    byte* encrypt_key();
+    byte reverse(byte);
 
 };
 

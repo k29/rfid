@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="Scan">
      <widget class="QLabel" name="label_scanStatus">
@@ -187,8 +187,8 @@
        <rect>
         <x>30</x>
         <y>30</y>
-        <width>99</width>
-        <height>27</height>
+        <width>161</width>
+        <height>71</height>
        </rect>
       </property>
       <property name="text">
@@ -198,10 +198,10 @@
      <widget class="QPushButton" name="pushButton_3">
       <property name="geometry">
        <rect>
-        <x>40</x>
-        <y>70</y>
-        <width>99</width>
-        <height>27</height>
+        <x>30</x>
+        <y>110</y>
+        <width>161</width>
+        <height>71</height>
        </rect>
       </property>
       <property name="text">
@@ -211,10 +211,10 @@
      <widget class="QPushButton" name="pushButton_4">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>100</y>
-        <width>99</width>
-        <height>27</height>
+        <x>30</x>
+        <y>190</y>
+        <width>161</width>
+        <height>71</height>
        </rect>
       </property>
       <property name="text">
@@ -224,10 +224,10 @@
      <widget class="QPushButton" name="pushButton_5">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>140</y>
-        <width>99</width>
-        <height>27</height>
+        <x>30</x>
+        <y>270</y>
+        <width>161</width>
+        <height>71</height>
        </rect>
       </property>
       <property name="text">
@@ -355,11 +355,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onInit_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>184</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>713</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onControlRFtransmit_clicked()</slot>
   <slot>onSelectMifare_clicked()</slot>
   <slot>onOptions_clicked()</slot>
   <slot>onBack_clicked()</slot>
+  <slot>onInit_clicked()</slot>
  </slots>
 </ui>
