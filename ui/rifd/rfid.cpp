@@ -27,12 +27,26 @@ rfid::rfid(QWidget *parent) :
         default_key_A[i]=0xff;
         default_key_B[i]=0xff;
     }
-
+    variable_reset();
 }
-
 rfid::~rfid()
 {
     delete ui;
+}
+
+
+void rfid::variable_reset()
+{
+    for(int i=0;i<sizeof(new_key_A);i++)
+    {
+        new_key_A[i]=0xff;
+    }
+    for(int i=0;i<sizeof(serialNumber[i]);i++)
+    {
+        serialNumber[i]=0xff;
+    }
+
+
 }
 
 void rfid::port_open()
@@ -117,6 +131,7 @@ void rfid::onSelectMifare_clicked()
         serialNumber[i]=tag.packet_received[i+5];
         serial_string.append(serialNumber[i]);
         qDebug()<<serialNumber[i];
+        printf("%x\t",serialNumber[i]);
     }
 
     ui->lineEdit_serial->setText(serial_string);
@@ -158,7 +173,7 @@ void rfid::onBack_clicked()
 
 void rfid::choose_options()
 {
-    //TO DO: decide which option will be enabled based on the rfid tag values
+
 }
 
 byte rfid::reverse(byte num)
@@ -174,7 +189,7 @@ byte rfid::reverse(byte num)
     return rev;
 }
 
-void rfid::encrypt_key()
+void rfid::get_encrypt_key()
 {
     for(int i=0;i<4;i++)
         new_key_A[i]=reverse(serialNumber[i]);
@@ -191,7 +206,7 @@ void rfid::onInit_clicked()
     /////////////////////////////////////
     /* defining the sector trailer for sector 0,1,2,3.... new_key_A(a function of the serial number),access_conditions(transport),new_key_B(useless)*/
     ////////////////////////////////////
-    encrypt_key();
+    get_encrypt_key();
     qDebug()<<"new key A: "<<new_key_A;  // 0xe9, 0x08, 0x86, 0xae, 0x06, 0x6a (for the blue tag)
     byte new_key_B[]={0xff,0xff,0xff,0xff,0xff,0xff};
     byte data_write_sectorTrailer[16];
@@ -206,25 +221,25 @@ void rfid::onInit_clicked()
     qDebug()<<data_write_sectorTrailer;
     ui->textEdit->setText("writing data...\n");
 
-    qDebug()<<"writing to sector trailer 0";
-    tag.write_data_block(0,3,default_key_A,data_write_sectorTrailer);
-    if(tag.packet_received[4]==0x00)
-        ui->textEdit->append("sector trailer 0 written\n");
+//    qDebug()<<"writing to sector trailer 0";
+//    tag.write_data_block(0,3,default_key_A,data_write_sectorTrailer);
+//    if(tag.packet_received[4]==0x00)
+//        ui->textEdit->append("sector trailer 0 written\n");
 
-    qDebug()<<"writing to sector trailer 1";
-    tag.write_data_block(0,7,default_key_A,data_write_sectorTrailer);
-    if(tag.packet_received[4]==0x00)
-        ui->textEdit->append("sector trailer 1 written\n");
+//    qDebug()<<"writing to sector trailer 1";
+//    tag.write_data_block(0,7,default_key_A,data_write_sectorTrailer);
+//    if(tag.packet_received[4]==0x00)
+//        ui->textEdit->append("sector trailer 1 written\n");
 
-    qDebug()<<"writing to sector trailer 2";
-    tag.write_data_block(0,11,default_key_A,data_write_sectorTrailer);
-    if(tag.packet_received[4]==0x00)
-        ui->textEdit->append("sector trailer 2 written\n");
+//    qDebug()<<"writing to sector trailer 2";
+//    tag.write_data_block(0,11,default_key_A,data_write_sectorTrailer);
+//    if(tag.packet_received[4]==0x00)
+//        ui->textEdit->append("sector trailer 2 written\n");
 
-    qDebug()<<"writing to sector trailer 3";
-    tag.write_data_block(0,15,default_key_A,data_write_sectorTrailer);
-    if(tag.packet_received[4]==0x00)
-        ui->textEdit->append("sector trailer 3 written\n");
+//    qDebug()<<"writing to sector trailer 3";
+//    tag.write_data_block(0,15,default_key_A,data_write_sectorTrailer);
+//    if(tag.packet_received[4]==0x00)
+//        ui->textEdit->append("sector trailer 3 written\n");
 
 
     //////////////////////////////////////
@@ -254,4 +269,33 @@ void rfid::onInit_clicked()
     tag.read_data_block(0,2,new_key_A);
     qDebug()<<"reading block 3";
     tag.read_data_block(0,3,new_key_A);
+}
+
+void rfid::onRead_clicked()
+{
+    qDebug()<<"in on ready clicked before calling encrypt key the new_key_A is: ";
+    for(int i=0;i<6;i++)
+        printf("%x\t",new_key_A[i]);
+    get_encrypt_key();
+    printf("in on ready clicked after calling encrypt key the new_key_A is: ");
+    for(int i=0;i<6;i++)
+        printf("%x\t",new_key_A[i]);
+    ui->stackedWidget->setCurrentWidget(ui->Read);
+    qDebug()<<"Reading Data blocks!!";
+    qDebug()<<".........................Sector 0: Block 0...............................";
+    tag.read_data_block(0,1,new_key_A);
+    qDebug()<<".........................Sector 0: Block 1...............................";
+    tag.read_data_block(0,1,new_key_A);
+    qDebug()<<".........................Sector 0: Block 2...............................";
+    tag.read_data_block(0,2,new_key_A);
+    qDebug()<<".........................Sector 0: Block 3...............................";
+    tag.read_data_block(0,3,new_key_A);
+    qDebug()<<".........................Sector 1: Block 4...............................";
+    tag.read_data_block(0,4,new_key_A);
+    qDebug()<<".........................Sector 1: Block 5...............................";
+    tag.read_data_block(0,5,new_key_A);
+    qDebug()<<".........................Sector 1: Block 6...............................";
+    tag.read_data_block(0,6,new_key_A);
+    qDebug()<<".........................Sector 1: Block 7...............................";
+    tag.read_data_block(0,7,new_key_A);
 }

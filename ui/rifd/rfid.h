@@ -51,8 +51,9 @@ private:
     void periodic_scanRfid();
     void update();
     void choose_options();
-    void encrypt_key();
+    void get_encrypt_key();
     byte reverse(byte);
+    void variable_reset();
 
     byte transport_config[6];
     byte default_key_A[6];
