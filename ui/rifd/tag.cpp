@@ -29,7 +29,6 @@ void Tag_Actions::Read_rfid()
   {
     if(serial.Read(&temp_packet_read,1)>0)
     {
-      //printf("%x\n",temp_packet_read);
       packet_received[i]=temp_packet_read;
       i++;
       if(i>2 && i==packet_received[2]+3)
@@ -39,18 +38,11 @@ void Tag_Actions::Read_rfid()
         break;
     }
   }
-  //checksum...
-  //if(isChecksum())
-  {
-    for(int i=0;i<packet_received[2]+3;i++)
-      printf("%x\t",packet_received[i]);
-  }
-  //else
-    //qDebug()<<"\nchecksum not match\n";
-
-  qDebug()<<"\n";
+//  for(int i=0;i<packet_received[2]+3;i++)
+//     printf("%x\t",packet_received[i]);
+//  qDebug()<<"\n";
   if(count==100)
-    qDebug()<<"Nothing to Read...\n";
+    qDebug()<<"Nothing to Read...Time Limit exceeded\n";
 }
 
 void Tag_Actions::packet_reset()
@@ -109,7 +101,7 @@ void Tag_Actions::select_mifare_card()
 }
 
 
-void Tag_Actions::read_data_block(char key_type, byte block, byte *key) //key: 'a' or 'b'
+bool Tag_Actions::read_data_block(char key_type, byte block, byte *key) //key: 'a' or 'b'
 {
   packet_reset();
   packet[2]=0x0A; // length=10
@@ -123,24 +115,26 @@ void Tag_Actions::read_data_block(char key_type, byte block, byte *key) //key: '
     packet[i]=key[i-6];
   checksum();
 
-  qDebug()<<"Sending the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
-    printf("%x\n",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
 
-  qDebug()<<"\nReading...";
   Read_rfid();
-
-  qDebug()<<"Thus the data in the block is: \n";
-  for(int i=5;i<21;i++)
-    printf("%x\n",packet_received[i]);
+  if(packet_received[4]==0x00)
+  {
+      qDebug()<<"Data:";
+      for(int i=5;i<21;i++)
+        printf("%x\n",packet_received[i]);
+      return true;
+  }
+  else
+    return false;
 
 }
 
 
-void Tag_Actions::write_data_block(char key_type, byte block, byte *key, byte *data_write)
+bool Tag_Actions::write_data_block(char key_type, byte block, byte *key, byte *data_write)
 {
   packet_reset();
   packet[2]=0x1A;
@@ -156,18 +150,16 @@ void Tag_Actions::write_data_block(char key_type, byte block, byte *key, byte *d
     packet[i]=data_write[i-12];
   checksum();
 
-  qDebug()<<"Writing the packet: \n";
   for(int i=0;i<packet[2]+3;i++)
   {
     printf("%x\t",packet[i]);
     serial.WriteByte((char)packet[i]);
   }
-  qDebug()<<"\nReading...\n";
   Read_rfid();
   if(packet_received[4]==0x00)
-    qDebug()<<"Writing success!!";
+    return true;
   else
-    qDebug()<<"Oops!! Error in writing.";
+    return false;
 }
 
 

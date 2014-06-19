@@ -45,19 +45,14 @@ class Tag_Actions
 
     void control_rf_transmit(bool state_switch);
     void select_mifare_card();
-    void read_data_block(char key_type, byte block, byte *key);
-    void write_data_block(char key_type, byte block, byte *key, byte *data_write);
+    bool read_data_block(char key_type, byte block, byte *key);
+    bool write_data_block(char key_type, byte block, byte *key, byte *data_write);
     void init_value_block(char key_type, byte block, byte *key, byte *value);
     void read_value_block(char key_type, byte block, byte *key);
     void increment_value(char key_type, byte block, byte *key, byte *value);
     void decrement_value(char key_type, byte block, byte *key, byte *value);
 
 };
-
-
-
-
-
 
 
 #endif // TAG_H

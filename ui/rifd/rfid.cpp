@@ -202,10 +202,11 @@ void rfid::get_encrypt_key()
 
 void rfid::onInit_clicked()
 {
-    qDebug()<<"in init clicked";
     /////////////////////////////////////
     /* defining the sector trailer for sector 0,1,2,3.... new_key_A(a function of the serial number),access_conditions(transport),new_key_B(useless)*/
     ////////////////////////////////////
+
+
     get_encrypt_key();
     qDebug()<<"new key A: "<<new_key_A;  // 0xe9, 0x08, 0x86, 0xae, 0x06, 0x6a (for the blue tag)
     byte new_key_B[]={0xff,0xff,0xff,0xff,0xff,0xff};
@@ -221,81 +222,148 @@ void rfid::onInit_clicked()
     qDebug()<<data_write_sectorTrailer;
     ui->textEdit->setText("writing data...\n");
 
-//    qDebug()<<"writing to sector trailer 0";
-//    tag.write_data_block(0,3,default_key_A,data_write_sectorTrailer);
-//    if(tag.packet_received[4]==0x00)
-//        ui->textEdit->append("sector trailer 0 written\n");
+    qDebug()<<"writing to sector trailer 0";
+    if(tag.write_data_block(0,3,default_key_A,data_write_sectorTrailer))
+    {
+        qDebug()<<"Write, sector trailer 0: SUCCESS";
+        ui->textEdit->append("Write, sector trailer 0: SUCCESS\n");
+    }
+    else
+    {
+        qDebug()<<"Write, sector trailer 0: FAIL";
+        ui->textEdit->append("Write, sector trailer 0: FAIL\n");
+    }
 
-//    qDebug()<<"writing to sector trailer 1";
-//    tag.write_data_block(0,7,default_key_A,data_write_sectorTrailer);
-//    if(tag.packet_received[4]==0x00)
-//        ui->textEdit->append("sector trailer 1 written\n");
+    qDebug()<<"writing to sector trailer 1";
+    if(tag.write_data_block(0,7,default_key_A,data_write_sectorTrailer))
+    {
+        qDebug()<<"Write, sector trailer 1: SUCCESS";
+        ui->textEdit->append("Write, sector trailer 1: SUCCESS\n");
+    }
+    else
+    {
+        qDebug()<<"Write, sector trailer 1: FAIL";
+        ui->textEdit->append("Write, sector trailer 1: FAIL\n");
+    }
 
-//    qDebug()<<"writing to sector trailer 2";
-//    tag.write_data_block(0,11,default_key_A,data_write_sectorTrailer);
-//    if(tag.packet_received[4]==0x00)
-//        ui->textEdit->append("sector trailer 2 written\n");
+    qDebug()<<"writing to sector trailer 2";
+    if(tag.write_data_block(0,11,default_key_A,data_write_sectorTrailer))
+    {
+        qDebug()<<"Write, sector trailer 2: SUCCESS";
+        ui->textEdit->append("Write, sector trailer 2: SUCCESS\n");
+    }
+    else
+    {
+        qDebug()<<"Write, sector trailer 2: FAIL";
+        ui->textEdit->append("Write, sector trailer 2: FAIL\n");
+    }
 
-//    qDebug()<<"writing to sector trailer 3";
-//    tag.write_data_block(0,15,default_key_A,data_write_sectorTrailer);
-//    if(tag.packet_received[4]==0x00)
-//        ui->textEdit->append("sector trailer 3 written\n");
+    qDebug()<<"writing to sector trailer 3";
+    if(tag.write_data_block(0,15,default_key_A,data_write_sectorTrailer))
+    {
+        qDebug()<<"Write, sector trailer 3: SUCCESS";
+        ui->textEdit->append("Write, sector trailer 3: SUCCESS\n");
+    }
+    else
+    {
+        qDebug()<<"Write, sector trailer 3: FAIL";
+        ui->textEdit->append("Write, sector trailer 3: FAIL\n");
+    }
+
+    qDebug()<<"writing to sector trailer 4";
+    if(tag.write_data_block(0,19,default_key_A,data_write_sectorTrailer))
+    {
+        qDebug()<<"Write, sector trailer 4: SUCCESS";
+        ui->textEdit->append("Write, sector trailer 4: SUCCESS\n");
+    }
+    else
+    {
+        qDebug()<<"Write, sector trailer 4: FAIL";
+        ui->textEdit->append("Write, sector trailer 4: FAIL\n");
+    }
+
 
 
     //////////////////////////////////////
     /*Storing Flags in block 1..... init_flag, install_flag, use_flag,0x00,0x02,0x09,Grey orange...*/
     /////////////////////////////////////
-    qDebug()<<"writing to block 1";
+
+
+
+    qDebug()<<"writing to Block 1";
     byte data_write_block1[]={true,false,false,0x00,0x02,0x09,'g','r','e','y','o','r','a','n','g','e'};
-    tag.write_data_block(0,1,new_key_A,data_write_block1);
-    if(tag.packet_received[4]==0x00)
-        ui->textEdit->append("block 1 data written\n");
+    if(tag.write_data_block(0,1,new_key_A,data_write_block1))
+    {
+        qDebug()<<"Write, Block 1: SUCCESS";
+        ui->textEdit->append("Write, Block 1: SUCCESS\n");
+    }
+    else
+    {
+        qDebug()<<"Write, Block 1: FAIL";
+        ui->textEdit->append("Write, Block 1: FAIL\n");
+    }
+
+
 
     /////////////////////////////////////
     /*Storing serial key in block 2*/
     ////////////////////////////////////
+
+
     qDebug()<<"writing to block 2";
     byte *data_write_block2=serialNumber;
-    tag.write_data_block(0,2,new_key_A,data_write_block2);
-    if(tag.packet_received[4]==0x00)
-        ui->textEdit->append("block 2 data written\n");
-
-    //////////checking the data by reading it...not to be in the final code:
-    qDebug()<<"reading block 0";
-    tag.read_data_block(0,0,new_key_A);
-    qDebug()<<"reading block 1";
-    tag.read_data_block(0,1,new_key_A);
-    qDebug()<<"reading block 2";
-    tag.read_data_block(0,2,new_key_A);
-    qDebug()<<"reading block 3";
-    tag.read_data_block(0,3,new_key_A);
+    if(tag.write_data_block(0,2,new_key_A,data_write_block2))
+    {
+        qDebug()<<"Write, Block 2: SUCCESS";
+        ui->textEdit->append("Write, Block 2: SUCCESS\n");
+    }
+    else
+    {
+        qDebug()<<"Write, Block 2: FAIL";
+        ui->textEdit->append("Write, Block 2: FAIL\n");
+    }
 }
 
 void rfid::onRead_clicked()
 {
-    qDebug()<<"in on ready clicked before calling encrypt key the new_key_A is: ";
-    for(int i=0;i<6;i++)
-        printf("%x\t",new_key_A[i]);
     get_encrypt_key();
-    printf("in on ready clicked after calling encrypt key the new_key_A is: ");
-    for(int i=0;i<6;i++)
-        printf("%x\t",new_key_A[i]);
     ui->stackedWidget->setCurrentWidget(ui->Read);
-    qDebug()<<"Reading Data blocks!!";
-    qDebug()<<".........................Sector 0: Block 0...............................";
-    tag.read_data_block(0,1,new_key_A);
-    qDebug()<<".........................Sector 0: Block 1...............................";
-    tag.read_data_block(0,1,new_key_A);
-    qDebug()<<".........................Sector 0: Block 2...............................";
-    tag.read_data_block(0,2,new_key_A);
-    qDebug()<<".........................Sector 0: Block 3...............................";
-    tag.read_data_block(0,3,new_key_A);
-    qDebug()<<".........................Sector 1: Block 4...............................";
-    tag.read_data_block(0,4,new_key_A);
-    qDebug()<<".........................Sector 1: Block 5...............................";
-    tag.read_data_block(0,5,new_key_A);
-    qDebug()<<".........................Sector 1: Block 6...............................";
-    tag.read_data_block(0,6,new_key_A);
-    qDebug()<<".........................Sector 1: Block 7...............................";
-    tag.read_data_block(0,7,new_key_A);
+
+    qDebug()<<"Reading form Block 1";
+    if(tag.read_data_block(0,1,new_key_A))
+        qDebug()<<"Read, Block 1: SUCCESS";
+    else
+        qDebug()<<"Read, Block 1: FAIL";
+
+    qDebug()<<"Reading form Block 2";
+    if(tag.read_data_block(0,2,new_key_A))
+        qDebug()<<"Read, Block 2: SUCCESS";
+    else
+        qDebug()<<"Read, Block 2: FAIL";
+
+    qDebug()<<"Reading form Block 3";
+    if(tag.read_data_block(0,3,new_key_A))
+        qDebug()<<"Read, Block 3: SUCCESS";
+    else
+        qDebug()<<"Read, Block 3: FAIL";
+
+    qDebug()<<"Reading form Block 4";
+    if(tag.read_data_block(0,4,new_key_A))
+        qDebug()<<"Read, Block 4: SUCCESS";
+    else
+        qDebug()<<"Read, Block 4: FAIL";
+
+    qDebug()<<"Reading form Block 5";
+    if(tag.read_data_block(0,5,new_key_A))
+        qDebug()<<"Read, Block 5: SUCCESS";
+    else
+        qDebug()<<"Read, Block 5: FAIL";
+
+    qDebug()<<"Reading form Block 6";
+    if(tag.read_data_block(0,6,new_key_A))
+        qDebug()<<"Read, Block 6: SUCCESS";
+    else
+        qDebug()<<"Read, Block 6: FAIL";
+
+
 }
