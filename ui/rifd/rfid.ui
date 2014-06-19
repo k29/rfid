@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>rfid</class>
+ <widget class="QMainWindow" name="rfid">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>756</width>
+    <height>536</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>rfid</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>621</width>
+      <height>441</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>2</number>
+    </property>
+    <widget class="QWidget" name="Scan">
+     <widget class="QLabel" name="label_scanStatus">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>0</y>
+        <width>271</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>No RFID Tag Detected!!</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_controlRFtransmit">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>70</y>
+        <width>271</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Control RF Transmit</string>
+      </property>
+      <property name="default">
+       <bool>false</bool>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>10</y>
+        <width>101</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Status:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_selectMifare">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>190</y>
+        <width>271</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Select Mifare Card</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_options">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>320</y>
+        <width>271</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Options</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>190</y>
+        <width>301</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_serial">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Serial: </string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineEdit_serial">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_type">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Type:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="lineEdit_type">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Options">
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>30</y>
+        <width>161</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Init</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>110</y>
+        <width>161</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Install</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>190</y>
+        <width>161</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Reuse</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_5">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>270</y>
+        <width>161</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Read</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>30</y>
+        <width>241</width>
+        <height>311</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Read">
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>30</y>
+        <width>541</width>
+        <height>381</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLineEdit" name="lineEdit"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="lineEdit_8"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLineEdit" name="lineEdit_9"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QLineEdit" name="lineEdit_10"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_13">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QLineEdit" name="lineEdit_11"/>
+       </item>
+       <item row="6" column="2">
+        <widget class="QLineEdit" name="lineEdit_12"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>10</y>
+      <width>93</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Bitstream Charter</family>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Back</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>756</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_controlRFtransmit</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onControlRFtransmit_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>277</x>
+     <y>218</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>664</x>
+     <y>224</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_selectMifare</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onSelectMifare_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>345</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>667</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_options</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onOptions_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>272</x>
+     <y>415</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>668</x>
+     <y>427</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onBack_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>683</x>
+     <y>99</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>708</x>
+     <y>165</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onInit_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>184</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>713</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>clicked()</signal>
+   <receiver>rfid</receiver>
+   <slot>onRead_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>138</x>
+     <y>354</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>734</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onControlRFtransmit_clicked()</slot>
+  <slot>onSelectMifare_clicked()</slot>
+  <slot>onOptions_clicked()</slot>
+  <slot>onBack_clicked()</slot>
+  <slot>onInit_clicked()</slot>
+  <slot>onRead_clicked()</slot>
+ </slots>
+</ui>

@@ -221,25 +221,25 @@ void rfid::onInit_clicked()
     qDebug()<<data_write_sectorTrailer;
     ui->textEdit->setText("writing data...\n");
 
-   qDebug()<<"writing to sector trailer 0";
-   tag.write_data_block(0,3,default_key_A,data_write_sectorTrailer);
-   if(tag.packet_received[4]==0x00)
-       ui->textEdit->append("sector trailer 0 written\n");
+//    qDebug()<<"writing to sector trailer 0";
+//    tag.write_data_block(0,3,default_key_A,data_write_sectorTrailer);
+//    if(tag.packet_received[4]==0x00)
+//        ui->textEdit->append("sector trailer 0 written\n");
 
-   qDebug()<<"writing to sector trailer 1";
-   tag.write_data_block(0,7,default_key_A,data_write_sectorTrailer);
-   if(tag.packet_received[4]==0x00)
-       ui->textEdit->append("sector trailer 1 written\n");
+//    qDebug()<<"writing to sector trailer 1";
+//    tag.write_data_block(0,7,default_key_A,data_write_sectorTrailer);
+//    if(tag.packet_received[4]==0x00)
+//        ui->textEdit->append("sector trailer 1 written\n");
 
-   qDebug()<<"writing to sector trailer 2";
-   tag.write_data_block(0,11,default_key_A,data_write_sectorTrailer);
-   if(tag.packet_received[4]==0x00)
-       ui->textEdit->append("sector trailer 2 written\n");
+//    qDebug()<<"writing to sector trailer 2";
+//    tag.write_data_block(0,11,default_key_A,data_write_sectorTrailer);
+//    if(tag.packet_received[4]==0x00)
+//        ui->textEdit->append("sector trailer 2 written\n");
 
-   qDebug()<<"writing to sector trailer 3";
-   tag.write_data_block(0,15,default_key_A,data_write_sectorTrailer);
-   if(tag.packet_received[4]==0x00)
-       ui->textEdit->append("sector trailer 3 written\n");
+//    qDebug()<<"writing to sector trailer 3";
+//    tag.write_data_block(0,15,default_key_A,data_write_sectorTrailer);
+//    if(tag.packet_received[4]==0x00)
+//        ui->textEdit->append("sector trailer 3 written\n");
 
 
     //////////////////////////////////////
