@@ -232,10 +232,24 @@ void rfid::choose_options()
     if(tag.read_data_block(0,1,new_key_A))
     {
         if(tag.packet_received[0]==false)
+        {
             ui->pushButton_init->setEnabled(true);
+            ui->pushButton_install->setEnabled(false);
+            ui->pushButton_reuse->setEnabled(false);
+        }
+        if(tag.packet_received[0]==true && tag.packet_received[1]==false && tag.packet_received[2]==false)
+        {
+            ui->pushButton_init->setEnabled(false);
+            ui->pushButton_install->setEnabled(true);
+            ui->pushButton_reuse->setEnabled(false);
+        }
+        if(tag.packet_received[0]==true && tag.packet_received[1]==true && tag.packet_received[2]==true)
+        {
+            ui->pushButton_init->setEnabled(false);
+            ui->pushButton_install->setEnabled(false);
+            ui->pushButton_reuse->setEnabled(true);
+        }
     }
-    
-
 }
 
 byte rfid::reverse(byte num)
@@ -264,6 +278,12 @@ void rfid::get_encrypt_key()
 
 void rfid::onInit_clicked()
 {
+    //write flag and format in Block 1.
+    //write the serial number in Block 2.
+    //write init date, and valid after init date in block 4.
+    
+    
+    
     /////////////////////////////////////
     /* defining the sector trailer for sector 0,1,2,3.... new_key_A(a function of the serial number),access_conditions(transport),new_key_B(useless)*/
     ////////////////////////////////////
@@ -280,7 +300,7 @@ void rfid::onInit_clicked()
     data_write_sectorTrailer[8]=0x80;
     data_write_sectorTrailer[9]=0x29;
     for(int i=10;i<16;i++)
-        data_write_sectorTrailer[i]=new_key_B[i-10];
+       data_write_sectorTrailer[i]=new_key_B[i-10];
     qDebug()<<data_write_sectorTrailer;
     ui->textEdit->setText("writing data...\n");
 
@@ -353,7 +373,10 @@ void rfid::onInit_clicked()
 
 
     qDebug()<<"writing to Block 1";
-    byte data_write_block1[]={true,false,false,0x00,0x02,0x09,'g','r','e','y','o','r','a','n','g','e'};
+    init_flag=true;
+    install_flag=false;
+    use_flag=flag;
+    byte data_write_block1[]={init_flag,install_flag,use_flag,0x00,0x02,0x09,'g','r','e','y','o','r','a','n','g','e'};
     if(tag.write_data_block(0,1,new_key_A,data_write_block1))
     {
         qDebug()<<"Write, Block 1: SUCCESS";
@@ -385,6 +408,23 @@ void rfid::onInit_clicked()
         ui->textEdit->append("Write, Block 2: FAIL\n");
     }
 }
+
+
+void rfid::onInstall_clicked()
+{
+    //set use flag as true
+    //authenticate using the key and check whether the serial number is matching.
+    //    
+}
+
+
+
+void rfid::onUse_clicked()
+{
+    
+}
+
+
 
 void rfid::onRead_clicked()
 {

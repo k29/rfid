@@ -65,6 +65,8 @@ private slots:
     void onOptions_clicked();
     void onBack_clicked();
     void onInit_clicked();
+    void onInstall_clicked();
+    void onUse_clicked();
     void onRead_clicked();
 
 
