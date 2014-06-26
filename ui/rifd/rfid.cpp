@@ -45,8 +45,6 @@ void rfid::variable_reset()
     {
         serialNumber[i]=0xff;
     }
-
-
 }
 
 void rfid::port_open()
@@ -81,7 +79,6 @@ void rfid::update()
             qDebug()<<"card not same, exiting";
             msgBox.setText("Error, card not same!!Exiting");
         }
-
 }
 
 void rfid::onControlRFtransmit_clicked()
@@ -99,7 +96,6 @@ void rfid::onControlRFtransmit_clicked()
         ui->pushButton_selectMifare->setEnabled(true);
         ui->label_scanStatus->setText("RF Transmit successfull");
      }
-
 }
 
 
@@ -185,6 +181,8 @@ void rfid::choose_options()
                 tag.packet_received[4]!=0x02 && tag.packet_received[5]!=0x09) //if not initialsed
         {
             ui->pushButton_init->setEnabled(true);
+            ui->pushButton_install->setEnabled(false);
+            ui->pushButton_reuse->setEnabled(false);
         }
         else
         {
@@ -412,9 +410,12 @@ void rfid::onInit_clicked()
 
 void rfid::onInstall_clicked()
 {
+    //reading of the serial and genration of the new key is done in choose_options()
+    //authenticate the sector 1 and 2 using the new key and check if the format matches
+    //write the install machine info. inot the tag
     //set use flag as true
-    //authenticate using the key and check whether the serial number is matching.
-    //    
+
+
 }
 
 
@@ -466,6 +467,4 @@ void rfid::onRead_clicked()
         qDebug()<<"Read, Block 6: SUCCESS";
     else
         qDebug()<<"Read, Block 6: FAIL";
-
-
 }
