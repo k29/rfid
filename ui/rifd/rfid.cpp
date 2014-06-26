@@ -3,6 +3,7 @@
 #include "login.h"
 #include <QTimer>
 #include <QDebug>
+#include <QFont>
 
 rfid::rfid(QWidget *parent) :
     QMainWindow(parent),
@@ -28,6 +29,29 @@ rfid::rfid(QWidget *parent) :
         default_key_B[i]=0xff;
     }
     variable_reset();
+
+    QFont font;
+    font.setPixelSize(35);
+
+    ui->label->setFont(font);
+    ui->label_scanStatus->setFont(font);
+    ui->label_serial->setFont(font);
+    ui->label_type->setFont(font);
+
+    ui->pushButton->setFont(font);
+    ui->pushButton_controlRFtransmit->setFont(font);
+    ui->pushButton_init->setFont(font);
+    ui->pushButton_install->setFont(font);
+    ui->pushButton_options->setFont(font);
+    ui->pushButton_read->setFont(font);
+    ui->pushButton_reuse->setFont(font);
+    ui->pushButton_selectMifare->setFont(font);
+
+    ui->lineEdit->setFont(font);
+    ui->lineEdit_serial->setFont(font);
+    ui->label_type->setFont(font);
+
+    ui->textEdit->setFont(font);
 }
 rfid::~rfid()
 {
@@ -405,14 +429,69 @@ void rfid::onInit_clicked()
         qDebug()<<"Write, Block 2: FAIL";
         ui->textEdit->append("Write, Block 2: FAIL\n");
     }
+
+    //TODO: WRITE THE INIT DATE AND INIT EXPIRY DATE
 }
 
 
 void rfid::onInstall_clicked()
 {
     //reading of the serial and genration of the new key is done in choose_options()
-    //authenticate the sector 1 and 2 using the new key and check if the format matches
-    //write the install machine info. inot the tag
+    //authenticate the sector 1 and 2 using the new key and check if the format matches and that the serial is correct.
+
+    bool correct_init_flag=false;
+    bool correct_serial=true;
+    if(tag.read_data_block(0,1,new_key_A))
+    {
+        if(tag.packet_received[3]==0x00 && tag.packet_received[4]==0x02 && tag.packet_received[5]==0x09
+                && tag.packet_received[9]=='y' && tag.packet_received[13]=='n')
+        {
+            if(tag.read_data_block(0,2,new_key_A))
+            {
+                for(int i=0;i<4;i++)
+                    if(!tag.packet_received[i]==serialNumber[i])
+                    {
+                        correct_serial=false;
+                        break;
+                    }
+                    else
+                        continue;
+                if(correct_serial==true)
+                    correct_init_flag=true;
+            }
+        }
+    }
+    //if correct_init_flag is true it ensures that the two blocks are all cool!!
+
+
+    //write the install machine info. into the tag:
+
+    //block 5 install date
+    QDate dateInstall;
+    byte *data_write_block5;
+    data_write_block5=new byte;
+    data_write_block5=&dateInstall;
+    if(tag.write_data_block(0,5,new_key_A,data_write_block5))
+    {
+        qDebug()<<"Write, Block 5: SUCCESS";
+        ui->textEdit->append("Write, Block 5: SUCCESS\n");
+    }
+
+    //block 6 no_of_use initialised to 0, to be incremented once the therapy button is clicked.
+    byte data_write_block6[16];
+    data_write_block6[0]=0
+
+    //install flag and use flag is set to true:
+
+
+
+
+
+
+
+
+
+
     //set use flag as true
 
 

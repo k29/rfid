@@ -10,6 +10,8 @@
 #include <QStackedWidget>
 #include <QStackedLayout>
 #include <QMessageBox>
+#include <QDebug>
+#include <QDate>
 
 #define no_of_use 10
 
