@@ -112,7 +112,7 @@ void rfid::onControlRFtransmit_clicked()
     if(!tag.packet_received[4]==0x00)
     {
         ui->label_scanStatus->setText("RF Transmit successfull");
-        qDebug()<<" control tranmit error!! try again";
+        qDebug()<<" control tranmit error!! try again"; //addd message box here for the actual pop up
     }
     else
     {
