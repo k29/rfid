@@ -38,9 +38,9 @@ void Tag_Actions::Read_rfid()
         break;
     }
   }
-//  for(int i=0;i<packet_received[2]+3;i++)
-//     printf("%x\t",packet_received[i]);
-//  qDebug()<<"\n";
+  for(int i=0;i<packet_received[2]+3;i++)
+     printf("%x\t",packet_received[i]);
+  qDebug()<<"\n";
   if(count==100)
     qDebug()<<"Nothing to Read...Time Limit exceeded\n";
 }

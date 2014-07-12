@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Scan">
      <widget class="QLabel" name="label_scanStatus">
@@ -355,7 +355,7 @@
      <x>0</x>
      <y>0</y>
      <width>756</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

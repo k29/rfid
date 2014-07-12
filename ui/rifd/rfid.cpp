@@ -28,6 +28,8 @@ rfid::rfid(QWidget *parent) :
         default_key_A[i]=0xff;
         default_key_B[i]=0xff;
     }
+    for(int i=0;i<4;i++)
+        serialNumber[i]=0xff;  //init the serial number to 0xff for each byte
     variable_reset();
 
     QFont font;
@@ -111,15 +113,17 @@ void rfid::onControlRFtransmit_clicked()
     tag.control_rf_transmit(true);
     if(!tag.packet_received[4]==0x00)
     {
-        ui->label_scanStatus->setText("RF Transmit successfull");
+        ui->label_scanStatus->setText("RF Transmit Failed");
         qDebug()<<" control tranmit error!! try again"; //addd message box here for the actual pop up
+        //TODO: send error report.
     }
+
     else
     {
         qDebug()<<"control RF transmit true set!!";
         ui->pushButton_selectMifare->setEnabled(true);
         ui->label_scanStatus->setText("RF Transmit successfull");
-     }
+    }
 }
 
 
@@ -143,41 +147,43 @@ void rfid::onSelectMifare_clicked()
         ui->lineEdit_serial->setEnabled(true);
         ui->lineEdit_type->setEnabled(true);
         ui->label_scanStatus->setText("comminication with card successfull");
-     }
 
-    QString serial_string;
-    for(int i=0;i<4;i++)
-    {
-        serialNumber[i]=tag.packet_received[i+5];
-        serial_string.append(serialNumber[i]);
-        qDebug()<<serialNumber[i];
-        printf("%x\t",serialNumber[i]);
-    }
 
-    ui->lineEdit_serial->setText(serial_string);
+        QString serial_string;
+        for(int i=0;i<4;i++)
+        {
+            serialNumber[i]=tag.packet_received[i+5];
+            serial_string.append(serialNumber[i]);
+            qDebug()<<serialNumber[i];
+            printf("%x\t",serialNumber[i]);
+        }
 
-    type=tag.packet_received[9];
-    if(type==0x00)
-    {
-       qDebug()<<"Mifare Standard 1K(S50) card\n";
-       ui->lineEdit_type->setText("Mifare Standard 1K(S50) card");
-    }
-    else if(type==0x01)
-    {
-        qDebug()<<"Mifare Standard 4K(S70) card\n";
-        ui->lineEdit_type->setText("Mifare Standard 4K(S70) card");
-    }
-    else if(type==0x02)
-    {
-       qDebug()<<"Mifare ProX card\n";
-       ui->lineEdit_type->setText("Mifare ProX card");
-    }
-    ui->pushButton_options->setEnabled(true);
+        ui->lineEdit_serial->setText(serial_string);
+
+        type=tag.packet_received[9];
+        if(type==0x00)
+        {
+           qDebug()<<"Mifare Standard 1K(S50) card\n";
+           ui->lineEdit_type->setText("Mifare Standard 1K(S50) card");
+        }
+        else if(type==0x01)
+        {
+            qDebug()<<"Mifare Standard 4K(S70) card\n";
+            ui->lineEdit_type->setText("Mifare Standard 4K(S70) card");
+        }
+        else if(type==0x02)
+        {
+           qDebug()<<"Mifare ProX card\n";
+           ui->lineEdit_type->setText("Mifare ProX card");
+        }
+        ui->pushButton_options->setEnabled(true);
+      }
 }
 
 
 void rfid::onOptions_clicked()
 {
+    qDebug()<<"in onoptions_clicked...";
     ui->stackedWidget->setCurrentWidget(ui->Options);
     choose_options();
 }
@@ -196,82 +202,109 @@ void rfid::choose_options()
     //use default keys to read block 1 and read the flag, is false then init active.
     //else control transmit true and select mifare card and then use new keys to activate either initialise ot reuse.
 
+    qDebug()<<"\n\n\n\nIn choose options function..now reading block 1 using default keys";
 
 
     /***************Using default keys****************/
     if(tag.read_data_block(0,1,default_key_A))
     {
-        if(tag.packet_received[0]!=true && tag.packet_received[3]!=0x00 &&
-                tag.packet_received[4]!=0x02 && tag.packet_received[5]!=0x09) //if not initialsed
-        {
-            ui->pushButton_init->setEnabled(true);
-            ui->pushButton_install->setEnabled(false);
-            ui->pushButton_reuse->setEnabled(false);
-        }
-        else
-        {
-            qDebug()<<"Error: keys not set but block 1 is correct!!";
-        }
+        qDebug()<<"reading using default keys successfull, hence setting the Init active";
+        ui->pushButton_init->setEnabled(true);
+        ui->pushButton_install->setEnabled(false);
+        ui->pushButton_reuse->setEnabled(false);
     }
 
-
-
-    /********************resetting***********************/
-    tag.control_rf_transmit(true);
-    tag.select_mifare_card();
-
-
-    /*******************Using new_key_A******************/
-    
-    //the following ensures that the format of the first two blocks are same as init!!
-    bool correct_init_flag=false;
-    bool correct_serial=true;
-    if(tag.read_data_block(0,1,new_key_A))
+    else // if not read using default then use the encrypted keys and set the buttons acive based on the flags!!
     {
-        if(tag.packet_received[3]==0x00 && tag.packet_received[4]==0x02 && tag.packet_received[5]==0x09
-                && tag.packet_received[9]=='y' && tag.packet_received[13]=='n')
+        /********************resetting***********************/
+        qDebug()<<"\n\n\n\nResetting the RFID tag communication!!";
+        onControlRFtransmit_clicked();
+        onSelectMifare_clicked();
+
+        get_encrypt_key();
+        /*******************Using new_key_A******************/
+        qDebug()<<"Reading using new keys!!\n";
+        //the following ensures that the format of the first two blocks are same as init!!
+        bool correct_init_flag=false;
+        bool correct_serial=true;
+        if(tag.read_data_block(0,1,new_key_A))
         {
-            if(tag.read_data_block(0,2,new_key_A))
+            qDebug()<<"\nRead using new keys!! Success";
+            if(tag.packet_received[8]==0x00 && tag.packet_received[9]==0x02 && tag.packet_received[10]==0x09
+                    && tag.packet_received[14]=='y' && tag.packet_received[18]=='n')
             {
-                for(int i=0;i<4;i++)
-                    if(!tag.packet_received[i]==serialNumber[i])
+                if(tag.read_data_block(0,2,new_key_A))
+                {
+                    for(int i=0;i<4;i++)
+                        if(!tag.packet_received[i+5]==serialNumber[i])
+                        {
+                            correct_serial=false;
+                            qDebug()<<"serial does not match!!";
+                            //TODO: send error report
+                            break;
+
+                        }
+                        else
+                            continue;
+                    if(correct_serial==true)
+                        correct_init_flag=true;
+                }
+            }
+            else
+                qDebug()<<"pattern of block 1 does not match!!";
+            //TODO: send error report
+
+            //if correct_init_flag is true it ensures that the two blocks are all cool!!
+            //now bothering about enabling the correct push button
+
+            //following code bothers about that:
+            //note that by default all are disabled!!
+            if(correct_init_flag==true)
+            {
+                qDebug()<<"\n\ncorrect intit set true...cheers!!";
+                qDebug()<<"deciding about which button should be active!!";
+                if(tag.read_data_block(0,1,new_key_A))
+                {
+                    qDebug()<<"reading block 1 successfull!!";
+                    if(tag.packet_received[5]==false)
                     {
-                        correct_serial=false;
-                        break;
+                        qDebug()<<"init flag is 0 still now";
+                        ui->pushButton_init->setEnabled(true);
+                        ui->pushButton_install->setEnabled(false);
+                        ui->pushButton_reuse->setEnabled(false);
                     }
                     else
-                        continue;
-                if(correct_serial==true)
-                    correct_init_flag=true;
+                        qDebug()<<"init flag not zero";
+                    if(tag.packet_received[5]==true && tag.packet_received[6]==false && tag.packet_received[7]==false)
+                    {
+                        qDebug()<<"init flag is true and rest of the two are false";
+                        ui->pushButton_init->setEnabled(false);
+                        ui->pushButton_install->setEnabled(true);
+                        ui->pushButton_reuse->setEnabled(false);
+                    }
+                    if(tag.packet_received[5]==true && tag.packet_received[6]==true && tag.packet_received[7]==true)
+                    {
+                        qDebug()<<"all are true";
+                        ui->pushButton_init->setEnabled(false);
+                        ui->pushButton_install->setEnabled(false);
+                        ui->pushButton_reuse->setEnabled(true);
+                    }
+                }
+                else
+                    qDebug()<<"block reading for flags failed!! :( please go back and try again...";
+                    //TODO: send error report
             }
+            else
+                qDebug()<<"not correctly initialsed, someone seriously trying to hack the device!!";
+                //TODO: send error report!!
+
         }
-    } 
-    //if correct_init_flag is true it ensures that the two blocks are all cool!! 
-    //now bothering about enabling the correct push button
-    
-    //following code bothers about that:
-    //note that by default all are disabled!!
-    if(tag.read_data_block(0,1,new_key_A))
-    {
-        if(tag.packet_received[0]==false)
-        {
-            ui->pushButton_init->setEnabled(true);
-            ui->pushButton_install->setEnabled(false);
-            ui->pushButton_reuse->setEnabled(false);
-        }
-        if(tag.packet_received[0]==true && tag.packet_received[1]==false && tag.packet_received[2]==false)
-        {
-            ui->pushButton_init->setEnabled(false);
-            ui->pushButton_install->setEnabled(true);
-            ui->pushButton_reuse->setEnabled(false);
-        }
-        if(tag.packet_received[0]==true && tag.packet_received[1]==true && tag.packet_received[2]==true)
-        {
-            ui->pushButton_init->setEnabled(false);
-            ui->pushButton_install->setEnabled(false);
-            ui->pushButton_reuse->setEnabled(true);
-        }
+        else
+            qDebug()<<"could not read from block 1";
+            //TODO : send error report!!
     }
+
+
 }
 
 byte rfid::reverse(byte num)
@@ -303,7 +336,6 @@ void rfid::onInit_clicked()
     //write flag and format in Block 1.
     //write the serial number in Block 2.
     //write init date, and valid after init date in block 4.
-    
     
     
     /////////////////////////////////////
@@ -397,7 +429,7 @@ void rfid::onInit_clicked()
     qDebug()<<"writing to Block 1";
     init_flag=true;
     install_flag=false;
-    use_flag=flag;
+    use_flag=false;
     byte data_write_block1[]={init_flag,install_flag,use_flag,0x00,0x02,0x09,'g','r','e','y','o','r','a','n','g','e'};
     if(tag.write_data_block(0,1,new_key_A,data_write_block1))
     {
@@ -429,7 +461,7 @@ void rfid::onInit_clicked()
         qDebug()<<"Write, Block 2: FAIL";
         ui->textEdit->append("Write, Block 2: FAIL\n");
     }
-
+    ui->pushButton_install->setEnabled(true);
     //TODO: WRITE THE INIT DATE AND INIT EXPIRY DATE
 }
 
@@ -467,19 +499,19 @@ void rfid::onInstall_clicked()
     //write the install machine info. into the tag:
 
     //block 5 install date
-    QDate dateInstall;
-    byte *data_write_block5;
-    data_write_block5=new byte;
-    data_write_block5=&dateInstall;
-    if(tag.write_data_block(0,5,new_key_A,data_write_block5))
-    {
-        qDebug()<<"Write, Block 5: SUCCESS";
-        ui->textEdit->append("Write, Block 5: SUCCESS\n");
-    }
+//    QDate dateInstall;
+//    byte *data_write_block5;
+//    data_write_block5=new byte;
+//    data_write_block5=&(byte)dateInstall;
+//    if(tag.write_data_block(0,5,new_key_A,data_write_block5))
+//    {
+//        qDebug()<<"Write, Block 5: SUCCESS";
+//        ui->textEdit->append("Write, Block 5: SUCCESS\n");
+//    }
 
     //block 6 no_of_use initialised to 0, to be incremented once the therapy button is clicked.
     byte data_write_block6[16];
-    data_write_block6[0]=0
+    data_write_block6[0]=0;
 
     //install flag and use flag is set to true:
 
