@@ -171,7 +171,8 @@ int rfid::start_rfid_verification()
     if(tag.read_data_block(0,1,default_key_A))
     {
         qDebug()<<"Reading using default keys successfull, hence setting the Init active";
-        init();
+        if(!init())
+            return 10; 
     }
     qDebug()<<"Failed to read using Default keys(Device Init done), using new keys";
 
@@ -216,10 +217,12 @@ int rfid::start_rfid_verification()
     {
         if(tag.read_data_block(0,1,new_key_A))
         {
-            if(tag.packet_received[7]==true) //is use flag true
+            if(tag.packet_received[7]==true) //is use flag true, use flag is changed in the update use function
             {
                 qDebug()<<"ready to use...";
-                update_use_condition();
+                if(!update_use_condition())
+                    return 11;
+                //TODO: Call Start therapy function here..
                 return 8;
             }
             else
@@ -367,7 +370,40 @@ bool rfid::init()
 
 }
 
-void rfid::update_use_condition()
+bool rfid::update_use_condition()
 {
+    //TODO: check the expiry date and no. of uses and update the use flag if not
+
+    //checking the no of uses flag:
+    if(tag.read_data_block(0,5,new_key_A))
+    {
+        use_count=tag.packet_received[5];
+        if(use_count==NO_OF_USES)
+        {
+            init_flag=true;
+            install_flag=false;
+            use_flag=false; //the device is useless now and hence cant be used
+            byte data_write_block1[]={init_flag,install_flag,use_flag,0x00,0x02,0x09,'g','r','e','y','o','r','a','n','g','e'};
+            if(tag.write_data_block(0,1,new_key_A,data_write_block1))
+                qDebug()<<"Write, Block 1: SUCCESS, DEVICE USELESS, (expired no od uses count)";
+            else
+            {
+                qDebug()<<"Write, Block 1: FAIL";
+                return false;
+            }
+        }
+        else
+        {
+            use_count++;
+            data_write_block5[]={(byte)use_count};
+            if(tag.write_data_block(0,5,new_key_A,data_write_block5))
+                qDebug()<<"use condition updated";
+            else
+                return false;      
+        }
+    }
+    else
+        return false;
+    return true;
 
 }
