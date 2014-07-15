@@ -1,4 +1,4 @@
-#include "rfid.h"
+#include "rfid_v1.h"
 #include "ui_rfid.h"
 #include "login.h"
 #include <QTimer>
@@ -63,10 +63,7 @@ bool rfid::port_open()
 }
 
 
-bool rfid::init()
-{
 
-}
 
 int rfid::communication_init()
 {
@@ -199,6 +196,7 @@ int rfid::start_rfid_verification()
                     if(tag.packet_received[i+5]==serialNumber[i])
                     {
                         correct_init_flag=true;
+                        qDebug()<<"correct init flag set";
                     }
                     else
                         return 7; //serial number does not match
@@ -222,8 +220,7 @@ int rfid::start_rfid_verification()
                 qDebug()<<"ready to use...";
                 if(!update_use_condition())
                     return 11;
-                //TODO: Call Start therapy function here..
-                return 8;
+                return 8; //once the function returns 8 we can call therapy function from here!!
             }
             else
                 return 9;
@@ -231,6 +228,7 @@ int rfid::start_rfid_verification()
         else
             return 4;
     }
+    return 12;
 
 }
 
@@ -246,7 +244,7 @@ bool rfid::init()
     SECTOR TRAILER for sector 0,1,2,3.... 
     new_key_A(a function of the serial number),access_conditions(transport),new_key_B(useless)
     **************************************************************************************************/
-    qDebug()<<"\n\n\n\nIn Init..."
+    qDebug()<<"\n\n\n\nIn Init...";
     get_encrypt_key();
     byte new_key_B[]={0xff,0xff,0xff,0xff,0xff,0xff};
     byte data_write_sectorTrailer[16];
@@ -347,6 +345,17 @@ bool rfid::init()
     BLOCK 4:
     Expiry date
     ********************************************************************/
+    qDebug()<<"Writing to block 4";
+    long timestamp=dt.currentDateTime().addMonths(EXPIRY_DATE).toTime_t();
+    qDebug()<<timestamp;
+    byte data_write_block4[]={(byte)((timestamp>>24) & 0xff),(byte)((timestamp>>16) & 0xff),(byte)((timestamp>>8) & 0xff),(byte)((timestamp) & 0xff)}; 
+    if(tag.write_data_block(0,4,new_key_A,data_write_block4))
+        qDebug()<<"Write, Block 4: SUCCESS";
+    else
+    {
+        qDebug()<<"Write, Block 4: FAIL";
+        return false;
+    }
     
 
 
@@ -357,7 +366,7 @@ bool rfid::init()
     No of uses
     ********************************************************************/
     qDebug()<<"Writing to block 5";
-    byte data_write_block5[]={0x01}; //no of uses initialised to 1
+    byte data_write_block5[]={0x00}; //no of uses initialised to 1
     if(tag.write_data_block(0,5,new_key_A,data_write_block5))
         qDebug()<<"Write, Block 5: SUCCESS";
     else
@@ -372,20 +381,51 @@ bool rfid::init()
 
 bool rfid::update_use_condition()
 {
-    //TODO: check the expiry date and no. of uses and update the use flag if not
+    QDateTime cdt;
+    long expiryDate, currentDate;
+    currentDate=cdt.currentDateTime().toTime_t();
+    qDebug()<<"current date is: "<<currentDate;
+    if(tag.read_data_block(0,4,new_key_A))
+    {
+        expiryDate=((tag.packet_received[5]<<24)+(tag.packet_received[6]<<16)+(tag.packet_received[7]<<8)+tag.packet_received[8]);
+        qDebug()<<"expiry date before inspection "<<expiryDate;
+        qDebug()<<"current date before inspecition: "<<currentDate;
+        if(currentDate>expiryDate)
+        {
+            init_flag=true;
+            install_flag=false;
+            use_flag=false; //the device is useless now and hence cant be used from the next time....
+            byte data_write_block1[]={init_flag,install_flag,use_flag,0x00,0x02,0x09,'g','r','e','y','o','r','a','n','g','e'};
+            if(tag.write_data_block(0,1,new_key_A,data_write_block1))
+                qDebug()<<"Write, Block 1: SUCCESS, DEVICE USELESS FROM THE NEXT TIME!!, (expired date)";
+            else
+            {
+                qDebug()<<"Write, Block 1: FAIL";
+                return false;
+            }
+        }
+        else
+        {
+            qDebug()<<"date within limits!! Device not yet expired...";
+        }
+    }
+    else
+        return false;//read error
 
     //checking the no of uses flag:
+    int use_count;
     if(tag.read_data_block(0,5,new_key_A))
     {
         use_count=tag.packet_received[5];
+        qDebug()<<"use count is "<<use_count;
         if(use_count==NO_OF_USES)
         {
             init_flag=true;
             install_flag=false;
-            use_flag=false; //the device is useless now and hence cant be used
+            use_flag=false; //the device is useless now and hence cant be used from the next time....
             byte data_write_block1[]={init_flag,install_flag,use_flag,0x00,0x02,0x09,'g','r','e','y','o','r','a','n','g','e'};
             if(tag.write_data_block(0,1,new_key_A,data_write_block1))
-                qDebug()<<"Write, Block 1: SUCCESS, DEVICE USELESS, (expired no od uses count)";
+                qDebug()<<"Write, Block 1: SUCCESS, DEVICE USELESS FROM THE NEXT TIME!!, (expired no of uses count)";
             else
             {
                 qDebug()<<"Write, Block 1: FAIL";
@@ -395,7 +435,7 @@ bool rfid::update_use_condition()
         else
         {
             use_count++;
-            data_write_block5[]={(byte)use_count};
+            byte data_write_block5[]={(byte)use_count};
             if(tag.write_data_block(0,5,new_key_A,data_write_block5))
                 qDebug()<<"use condition updated";
             else

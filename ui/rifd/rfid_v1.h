@@ -1,4 +1,5 @@
 //TODO: Add to the main timer the check of verification of serial number every 10 secs.
+//TODO: Add the time expiry
 
 
 #ifndef RFID_H
@@ -11,12 +12,14 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QDate>
+#include <QDateTime>
 
 #include "tag.h"
 #include "serial.h"
 #include "ui_rfid.h"
 
-#define NO_OF_USES 100
+#define NO_OF_USES 2
+#define EXPIRY_DATE 3 //in months
 
 
 namespace Ui {
@@ -39,6 +42,7 @@ private:
     QTimer *timer;
     QMessageBox msgBox;
     QStackedWidget stackedWidget;
+    QDateTime dt;
 
     //flags
     bool init_flag;
@@ -50,28 +54,18 @@ private:
     byte new_key_A[6];
     byte rev;
 
-    void initial_scanRfid();
     bool port_open();
-    void periodic_scanRfid();
-    void update();
-    void choose_options();
     void get_encrypt_key();
     byte reverse(byte);
     void variable_reset();
+    int communication_init();
+    bool update_use_condition();
+    bool init();
 
     byte transport_config[6];
     byte default_key_A[6];
     byte default_key_B[6];
 
-private slots:
-    void onControlRFtransmit_clicked();
-    void onSelectMifare_clicked();
-    void onOptions_clicked();
-    void onBack_clicked();
-    void onInit_clicked();
-    void onInstall_clicked();
-    void onUse_clicked();
-    void onRead_clicked();
 
 
 public:
@@ -79,3 +73,9 @@ public:
 };
 
 #endif // RFID_H
+
+
+
+
+
+
